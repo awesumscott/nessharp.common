@@ -114,12 +114,12 @@ namespace NESSharp.Common {
 			//Stack.Backup(Register.A);
 			
 			_temp.Set(0xC0); //starting lo of attr address
-			If(() => PPUAddress.Lo.ToA().IsNegative(), () => {
+			If(() => A.Set(PPUAddress.Lo).IsNegative(), () => {
 				//_temp.SetAdd(8);
 				_temp.Set(z => z.Add(8));
 			});
-			_temp.Set(z => z.Add(PPUAddress.Lo.ToA().And(0x1F).Divide(4)));
-			_temp.Set(z => z.Add(PPUAddress.Hi.ToA().And(0x0F).Multiply(4)));
+			_temp.Set(z => z.Add(PPUAddress.Lo.And(0x1F).Divide(4)));
+			_temp.Set(z => z.Add(PPUAddress.Hi.And(0x0F).Multiply(4)));
 
 			//NES.PPU.SetAddress()
 			//Stack.Restore(Register.A);
