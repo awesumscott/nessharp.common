@@ -68,7 +68,7 @@ namespace NESSharp.Common.Input {
 			Loop.Do(() => {
 				Stack.Preserve(X, () => {
 					A.Set(NES.Controller.One).LogicalShiftRight();
-					Player[Y].State.SetRotateLeft();
+					Player[Y].State.SetROL();
 				});
 				//X.Unlock();
 				X--;

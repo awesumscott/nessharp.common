@@ -128,7 +128,7 @@ namespace NESSharp.Common.Mapper30 {
 			Loop.Do(() => {
 				AddrWriteVerify[Y].Set(A.Set(LabelFor(_WriteVerify).Offset(Y)));
 				Y++;
-				Use(Asm.CPY.Immediate, _lenTotalRamLength);
+				CPU6502.CPY(_lenTotalRamLength);
 			}).While(() => Y.NotEquals(0));
 		}
 

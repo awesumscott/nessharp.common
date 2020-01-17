@@ -24,10 +24,16 @@ namespace NESSharp.Common {
 			});
 		}
 		private static void _yAddCorrect() {
-			A.Set(239); //TODO: replace after implementing GreaterThan
-			Use(Asm.CMP.Absolute, NES.PPU.LazyScrollY); //Y >= 240?
-			If(() => Carry.IsClear(), () => {
-				NES.PPU.LazyScrollY.Set(z => z.Add((U8)16));
+			//A.Set(239); //TODO: replace after implementing GreaterThan
+			//CPU6502.CMP(NES.PPU.LazyScrollY); //Y >= 240?
+			////Use(Asm.CMP.Absolute, NES.PPU.LazyScrollY);
+			//If(() => Carry.IsClear(), () => {
+			//	NES.PPU.LazyScrollY.Set(z => z.Add((U8)16));
+			//	NES.PPU.LazyControl.Set(z => z.Xor(0b10));
+			//});
+
+			If(() => NES.PPU.LazyScrollY.GreaterThanOrEqualTo(240), () => {
+				NES.PPU.LazyScrollY.Set(z => z.Add(16));
 				NES.PPU.LazyControl.Set(z => z.Xor(0b10));
 			});
 		}

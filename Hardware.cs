@@ -6,7 +6,7 @@ namespace NESSharp.Common {
 	public static class Hardware {
 		public static void WaitForVBlank() {
 			Loop.Do(() => {
-				NES.PPU.Status.BitTest();
+				CPU6502.BIT(NES.PPU.Status);
 			}).While(() => Condition.IsPositive);
 		}
 		public static void LoadPalettes(Action paletteDataSection) {
