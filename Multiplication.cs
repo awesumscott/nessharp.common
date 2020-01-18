@@ -6,7 +6,7 @@ using static NESSharp.Core.AL;
 
 namespace NESSharp.Common {
 	public static class Multiplication {
-		public static RegisterA Multiply(this Var8 v, U8 n) {
+		public static RegisterA Multiply(this VByte v, U8 n) {
 			return A.Set(v).Multiply(n);
 		}
 		public static RegisterA Multiply(this RegisterA a, U8 n) {

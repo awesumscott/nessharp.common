@@ -3,10 +3,10 @@ using static NESSharp.Core.AL;
 
 namespace NESSharp.Common.Input {
 	public class Gamepad : Struct {
-		public Var8 State { get; set; }
-		public Var8 StatePrev { get; set; }
-		public Var8 JustPressed { get; set; }
-		public Var8 JustReleased { get; set; }
+		public VByte State { get; set; }
+		public VByte StatePrev { get; set; }
+		public VByte JustPressed { get; set; }
+		public VByte JustReleased { get; set; }
 
 		public RegisterA Held(U8 buttons) => State.And(buttons);
 		public RegisterA Pressed(U8 buttons) => JustPressed.And(buttons);
@@ -15,7 +15,7 @@ namespace NESSharp.Common.Input {
 	public static class Gamepads {
 		public static int NumPlayers = 4;
 		public static StructOfArrays<Gamepad> Player;
-		public static Var8 GamepadIndex = Var8.New(zp, "gamepad_index");
+		public static VByte GamepadIndex = VByte.New(zp, "gamepad_index");
 
 		static Gamepads() {
 			Player = StructOfArrays<Gamepad>.New("gamepadData", 4).Dim(zp);

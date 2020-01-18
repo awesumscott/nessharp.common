@@ -6,7 +6,7 @@ using NESSharp.Core;
 
 namespace NESSharp.Common {
 	public static class Math {
-		public static void Clamp(Var8 v, U8 low, U8 high) {
+		public static void Clamp(VByte v, U8 low, U8 high) {
 			If(	Option(() => A.Set(v).LessThan(low), () => {
 					v.Set(low);
 				}),

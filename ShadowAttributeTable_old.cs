@@ -36,9 +36,9 @@ namespace NESSharp.Common {
 			NT3	=	0b1000
 		}
 
-		public static Var16 PPUAddress;
-		public static Array<Var8> Table;
-		private static Var8 _temp;
+		public static VWord PPUAddress;
+		public static Array<VByte> Table;
+		private static VByte _temp;
 		private bool _twoHigh = false, _twoWide = false;
 		private bool _xAsc, _yAsc;
 		public ShadowAttributeTable(RAM r, NameTable nts) {
@@ -54,9 +54,9 @@ namespace NESSharp.Common {
 			_twoWide = nts.HasFlag(NameTable.NT0 | NameTable.NT1) || nts.HasFlag(NameTable.NT2 | NameTable.NT3);
 			_twoHigh = nts.HasFlag(NameTable.NT0 | NameTable.NT2) || nts.HasFlag(NameTable.NT1 | NameTable.NT3);
 
-			PPUAddress = Var16.New(ram, "ShadowAttributeTable_PPUAddress");
-			Table	= Array<Var8>.New((U8)(64 * ntCount), r, "ShadowAttributeTable_attributeTable");
-			_temp = Var8.New(ram, "ShadowAttributeTable_temp");
+			PPUAddress = VWord.New(ram, "ShadowAttributeTable_PPUAddress");
+			Table	= Array<VByte>.New((U8)(64 * ntCount), r, "ShadowAttributeTable_attributeTable");
+			_temp = VByte.New(ram, "ShadowAttributeTable_temp");
 		}
 		public void Horiz(bool ascending = true) {
 			_xAsc = ascending;
@@ -72,13 +72,13 @@ namespace NESSharp.Common {
 
 
 	public static class ShadowAttributeTable_old {
-		public static Var16 PPUAddress;
-		public static Array<Var8> Table;
-		private static Var8 _temp;
+		public static VWord PPUAddress;
+		public static Array<VByte> Table;
+		private static VByte _temp;
 		static ShadowAttributeTable_old() {
-			PPUAddress = Var16.New(ram, "ShadowAttributeTable_PPUAddress");
-			Table	= Array<Var8>.New(64, ram, "ShadowAttributeTable_attributeTable");
-			_temp = Var8.New(ram, "ShadowAttributeTable_temp");
+			PPUAddress = VWord.New(ram, "ShadowAttributeTable_PPUAddress");
+			Table	= Array<VByte>.New(64, ram, "ShadowAttributeTable_attributeTable");
+			_temp = VByte.New(ram, "ShadowAttributeTable_temp");
 		}
 
 		public static void Clear() {

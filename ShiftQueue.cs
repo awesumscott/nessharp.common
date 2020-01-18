@@ -3,11 +3,11 @@ using static NESSharp.Core.AL;
 
 namespace NESSharp.Common {
 	public class ShiftQueue {
-		public Array<Var8> Values; //queue for input to lazy-execute slide actions
+		public Array<VByte> Values; //queue for input to lazy-execute slide actions
 		private U8 _clearVal = 0;
 		public static ShiftQueue New(RAM ram, U8 length, string name, U8 clearValue) {
 			var bq = new ShiftQueue();
-			bq.Values	= Array<Var8>.New(length, ram, name + "_values");
+			bq.Values	= Array<VByte>.New(length, ram, name + "_values");
 			bq._clearVal = clearValue;
 			return bq;
 		}
@@ -18,7 +18,7 @@ namespace NESSharp.Common {
 			});
 		}
 
-		public void Push(Var8 v) {
+		public void Push(VByte v) {
 			var lblBreak = Label.New();
 			X.Set(0);
 			Loop.AscendWhile(X, () => X.NotEquals((U8)Values.Length), () => {

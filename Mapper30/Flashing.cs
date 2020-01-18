@@ -7,10 +7,10 @@ using static NESSharp.Core.AL;
 namespace NESSharp.Common.Mapper30 {
 	public static class Flashing {
 		//These variables need to be located in the Zero Page, due to the need for Indirect addressing.
-		private static Var8 TargetBank		= Var8.New(zp, "Flashing_TargetBank");
+		private static VByte TargetBank		= VByte.New(zp, "Flashing_TargetBank");
 		private static Ptr TargetAddress	= Ptr.New("Flashing_TargetAddress");
-		private static Var8 SourceAddress	= Var8.New(zp, "Flashing_SourceAddress");
-		private static Var8 ReturnBank		= Var8.New(zp, "Flashing_ReturnBank");
+		private static VByte SourceAddress	= VByte.New(zp, "Flashing_SourceAddress");
+		private static VByte ReturnBank		= VByte.New(zp, "Flashing_ReturnBank");
 		private static Address FlashRamPage	= Addr(0x0700);
 		private static Address AddrWriteVerify	= Addr(0x0);
 		private static Address AddrEraseSector	= Addr(0x0);

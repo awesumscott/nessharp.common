@@ -84,10 +84,10 @@ namespace NESSharp.Common.Mapper30 {
 		}
 	}
 	public static class BankSwitching {
-		public static Var8 Bank;
+		public static VByte Bank;
 
 		static BankSwitching() {
-			Bank = Var8.New(zp, "bank_current");
+			Bank = VByte.New(zp, "bank_current");
 		}
 
 		[Dependencies]

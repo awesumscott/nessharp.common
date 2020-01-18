@@ -32,7 +32,7 @@ namespace NESSharp.Common {
 		}
 
 		
-		public static void GetTVSystem(Var8 nmis) {
+		public static void GetTVSystem(VByte nmis) {
 			X.Set(0);
 			Y.Set(0);
 			A.Set(nmis);

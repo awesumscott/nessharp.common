@@ -4,10 +4,10 @@ using static NESSharp.Core.AL;
 
 namespace NESSharp.Common {
 	public class LiveQueue {
-		public Array<Var8> Values; //queue for input to lazy-execute slide actions
+		public Array<VByte> Values; //queue for input to lazy-execute slide actions
 		private U8 _stopVal = 0;
-		public Var8 WriteIndex;
-		public Var8 ReadIndex;
+		public VByte WriteIndex;
+		public VByte ReadIndex;
 		//private Var8 _done;
 		private bool _isReading = false, _isWriting = false;
 		private RegisterBase _indexReg = null;
@@ -15,10 +15,10 @@ namespace NESSharp.Common {
 		}
 		public static LiveQueue New(RAM zp, RAM ram, RAM valuesRam, U8 length, string name, U8 stopVal) {
 			var bq = new LiveQueue();
-			bq.Values	= Array<Var8>.New(length, valuesRam, name + "_values");
+			bq.Values	= Array<VByte>.New(length, valuesRam, name + "_values");
 			bq._stopVal = stopVal;
-			bq.WriteIndex = Var8.New(zp, name + "_write");
-			bq.ReadIndex = Var8.New(zp, name + "_read");
+			bq.WriteIndex = VByte.New(zp, name + "_write");
+			bq.ReadIndex = VByte.New(zp, name + "_read");
 			//bq._done = Var8.New(ram, name + "_done");
 			return bq;
 		}
@@ -162,7 +162,7 @@ namespace NESSharp.Common {
 		}
 		//public Condition Done => _done.NotEquals(0);
 		//public Condition NotDone => _done.Equals(0);
-		public Var8 Peek() {
+		public VByte Peek() {
 			if (!_isReading)
 				throw new Exception("Peek can only be used within a LiveQueue.Read() block");
 			if (_indexReg is RegisterX) {
@@ -171,7 +171,7 @@ namespace NESSharp.Common {
 				return Values[Y];
 			} else throw new Exception();
 		}
-		public Var8 Unsafe_Peek(RegisterBase indexReg) {
+		public VByte Unsafe_Peek(RegisterBase indexReg) {
 			if (indexReg is RegisterX) {
 				return Values[X];
 			} else if (indexReg is RegisterY) {

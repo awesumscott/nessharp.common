@@ -4,18 +4,18 @@ using static NESSharp.Core.AL;
 namespace NESSharp.Common {
 	public class ByteGrid {
 		
-		public Array<Var8> Values {get;set;}
-		public Var8 Width, Height;
-		public Var8 Max; //Array length of current level (_width * _height)
-		public Var8 Index; //Used as a cursor for grid cell access via Y
+		public Array<VByte> Values {get;set;}
+		public VByte Width, Height;
+		public VByte Max; //Array length of current level (_width * _height)
+		public VByte Index; //Used as a cursor for grid cell access via Y
 
 		public static ByteGrid New(RAM ram, U8 length, string name) {
 			var grid = new ByteGrid();
-			grid.Values			= Array<Var8>.New(length, ram, name + "_grid");
-			grid.Width			= Var8.New(ram, name + "_width");
-			grid.Height			= Var8.New(ram, name + "_height");
-			grid.Max			= Var8.New(ram, name + "_max");
-			grid.Index			= Var8.New(ram, name + "_index");
+			grid.Values			= Array<VByte>.New(length, ram, name + "_grid");
+			grid.Width			= VByte.New(ram, name + "_width");
+			grid.Height			= VByte.New(ram, name + "_height");
+			grid.Max			= VByte.New(ram, name + "_max");
+			grid.Index			= VByte.New(ram, name + "_index");
 			return grid;
 		}
 		public void SetDims(U8 w, U8 h) {
