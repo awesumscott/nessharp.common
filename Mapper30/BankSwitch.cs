@@ -51,9 +51,9 @@ namespace NESSharp.Common.Mapper30 {
 			A.Set(BankLabel.Offset(X));
 			BankSwitching.SwitchPrgTo(A);
 			A.Set(SubHiLabel.Offset(X));
-			Stack.Backup(Register.A);
+			Stack.Backup(A);
 			A.Set(SubLoLabel.Offset(X));
-			Stack.Backup(Register.A);
+			Stack.Backup(A);
 		}
 		public void Call(OpLabel lbl) {
 			X.Set(lbl.Reference());
