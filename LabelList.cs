@@ -47,7 +47,7 @@ namespace NESSharp.Common {
 		
 		public void GoTo(U8 index) => GoTo_Indirect(this[X.Set(index)]);
 		public void GoTo(VByte index) => GoTo_Indirect(this[index]);
-		public void GoTo(RegisterBase r) => GoTo_Indirect(this[r]);
+		//public void GoTo(RegisterBase r) => GoTo_Indirect(this[r]);
 		
 		public void GoSub(RegisterY y) {
 			if (_stackJumpHelperFunc == null) throw new Exception("Stack jump list not written for this label list");

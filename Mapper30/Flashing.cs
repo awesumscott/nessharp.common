@@ -7,10 +7,10 @@ using static NESSharp.Core.AL;
 namespace NESSharp.Common.Mapper30 {
 	public static class Flashing {
 		//These variables need to be located in the Zero Page, due to the need for Indirect addressing.
-		private static VByte TargetBank		= VByte.New(zp, "Flashing_TargetBank");
+		private static VByte TargetBank		= VByte.New(GlobalZp, "Flashing_TargetBank");
 		private static Ptr TargetAddress	= Ptr.New("Flashing_TargetAddress");
-		private static VByte SourceAddress	= VByte.New(zp, "Flashing_SourceAddress");
-		private static VByte ReturnBank		= VByte.New(zp, "Flashing_ReturnBank");
+		private static VByte SourceAddress	= VByte.New(GlobalZp, "Flashing_SourceAddress");
+		private static VByte ReturnBank		= VByte.New(GlobalZp, "Flashing_ReturnBank");
 		private static Address FlashRamPage	= Addr(0x0700);
 		private static Address AddrWriteVerify	= Addr(0x0);
 		private static Address AddrEraseSector	= Addr(0x0);
@@ -29,10 +29,10 @@ namespace NESSharp.Common.Mapper30 {
 			var lenWriteByte =			(U8)Length(_WriteByte);
 			var lenSoftwareIdentify =	(U8)Length(_SoftwareIdentify);
 			//Reserve chunks in RAM
-			var ramWriteVerify =		ram.Dim(lenWriteVerify);
-			var ramEraseSector =		ram.Dim(lenEraseSector);
-			var ramWriteByte =			ram.Dim(lenWriteByte);
-			var ramSoftwareIdentify =	ram.Dim(lenSoftwareIdentify);
+			var ramWriteVerify =		GlobalRam.Dim(lenWriteVerify);
+			var ramEraseSector =		GlobalRam.Dim(lenEraseSector);
+			var ramWriteByte =			GlobalRam.Dim(lenWriteByte);
+			var ramSoftwareIdentify =	GlobalRam.Dim(lenSoftwareIdentify);
 			//Save starting addresses for invoking them with GoSub
 			AddrWriteVerify =			ramWriteVerify[0];
 			AddrEraseSector =			ramEraseSector[0];

@@ -15,10 +15,10 @@ namespace NESSharp.Common.Input {
 	public static class Gamepads {
 		public static int NumPlayers = 4;
 		public static StructOfArrays<Gamepad> Player;
-		public static VByte GamepadIndex = VByte.New(zp, "gamepad_index");
+		public static VByte GamepadIndex = VByte.New(GlobalZp, "gamepad_index");
 
 		static Gamepads() {
-			Player = StructOfArrays<Gamepad>.New("gamepadData", 4).Dim(zp);
+			Player = StructOfArrays<Gamepad>.New("gamepadData", 4).Dim(GlobalZp);
 		}
 
 		//[Declarations]
