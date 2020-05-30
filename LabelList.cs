@@ -46,7 +46,7 @@ namespace NESSharp.Common {
 		}
 		
 		public void GoTo(U8 index) => GoTo_Indirect(this[X.Set(index)]);
-		public void GoTo(VByte index) => GoTo_Indirect(this[index]);
+		public void GoTo(IndexingRegisterBase reg) => GoTo_Indirect(this[reg]);
 		//public void GoTo(RegisterBase r) => GoTo_Indirect(this[r]);
 		
 		public void GoSub(RegisterY y) {
@@ -68,21 +68,12 @@ namespace NESSharp.Common {
 			//GoTo_Indirect(this[X.Set(index)]);
 		}
 
-		public VWord this[VByte offset] {
+		public VWord this[IndexingRegisterBase reg] {
 			get {
-				X.Set(offset);
-				Temp[0].Set(_lo.Offset(X));
-				Temp[1].Set(_hi.Offset(X));
+				Temp[0].Set(_lo.Offset(reg));
+				Temp[1].Set(_hi.Offset(reg));
 				
 				//TODO: fix these up: VWord needs a Ref() func, and all need versions that can accept VByte lists
-				return VWord.Ref(Temp[0], 2);
-			}
-		}
-		public VWord this[RegisterBase r] {
-			get {
-				Temp[0].Set(_lo.Offset(r));
-				Temp[1].Set(_hi.Offset(r));
-
 				return VWord.Ref(Temp[0], 2);
 			}
 		}
