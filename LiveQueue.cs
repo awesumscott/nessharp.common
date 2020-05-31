@@ -128,15 +128,19 @@ namespace NESSharp.Common {
 				Y++;
 			}
 		}
-		//public void Unsafe_Push(IndexingRegisterBase indexReg, RegisterA a) {
-		//	if (indexReg is RegisterX) {
-		//		Values[X].Set(a);
-		//		X++;
-		//	} else if (indexReg is RegisterY) {
-		//		Values[Y].Set(a);
-		//		Y++;
-		//	} else throw new Exception();
-		//}
+
+		public void PushRangeOnce(Action action) {
+			var len = Length(action);
+			if (len > 255) throw new Exception("Block is too big, it must be 255 bytes or less.");
+			X.Set(WriteIndex);
+			TempPtr0.PointTo(LabelFor(action));
+			Loop.AscendWhile(Y.Set(0), () => Y.NotEquals((U8)len), () => {
+				Values[X].Set(TempPtr0[Y]);
+				X++;
+			});
+			Values[X].Set(_stopVal);
+			WriteIndex.Set(X);
+		}
 
 		
 		public void PushStart(IndexingRegisterBase indexReg) {

@@ -17,9 +17,9 @@ namespace NESSharp.Common.Mapper30 {
 		private static Address AddrWriteByte	= Addr(0x0);
 		private static Address AddrSoftwareIdentify	= Addr(0x0);
 
-		private static readonly Stream writeAddr0 = new Stream(0xC000);
-		private static readonly Stream writeAddr1 = new Stream(0x9555);
-		private static readonly Stream writeAddr2 = new Stream(0xAAAA);
+		private static readonly Bus writeAddr0 = new Bus(0xC000);
+		private static readonly Bus writeAddr1 = new Bus(0x9555);
+		private static readonly Bus writeAddr2 = new Bus(0xAAAA);
 		private static U8 _lenTotalRamLength;
 
 		static Flashing() {
