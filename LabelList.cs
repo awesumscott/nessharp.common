@@ -38,9 +38,9 @@ namespace NESSharp.Common {
 			//Write the helper function for stack jumps
 			_stackJumpHelperFunc = Label.New();
 			Use(_stackJumpHelperFunc);
-			A.Set(_hi.Offset(X));
+			A.Set(_hi[X]);
 			Stack.Backup(Register.A);
-			A.Set(_lo.Offset(X));
+			A.Set(_lo[X]);
 			Stack.Backup(Register.A);
 			Return();
 		}
@@ -70,8 +70,8 @@ namespace NESSharp.Common {
 
 		public VWord this[IndexingRegisterBase reg] {
 			get {
-				Temp[0].Set(_lo.Offset(reg));
-				Temp[1].Set(_hi.Offset(reg));
+				Temp[0].Set(_lo[reg]);
+				Temp[1].Set(_hi[reg]);
 				
 				//TODO: fix these up: VWord needs a Ref() func, and all need versions that can accept VByte lists
 				return VWord.Ref(Temp[0], 2);

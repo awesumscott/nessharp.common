@@ -1,4 +1,5 @@
 ﻿using NESSharp.Core;
+using System;
 using static NESSharp.Core.AL;
 
 namespace NESSharp.Common.Input {
@@ -12,12 +13,69 @@ namespace NESSharp.Common.Input {
 		public RegisterA Pressed(U8 buttons) => JustPressed.And(buttons);
 		public RegisterA Released(U8 buttons) => JustReleased.And(buttons);
 	}
-	public static class Gamepads {
+
+	public class Gamepads : Module {
+		private StructOfArrays<Gamepad> _instances;
+		public VByte _index;
+		private U8 _numPlayers;
+
+		public Gamepads Setup(U8 players) {
+			_numPlayers = players;
+			return this;
+		}
+
+		public void Update() {
+			GoSub(Read);
+		}
+
+		[Dependencies]
+		private void Dependencies() {
+			_index = VByte.New(Ram, "gamepad_index");
+			_instances = StructOfArrays<Gamepad>.New("gamepadData", _numPlayers).Dim(Ram);
+		}
+
+		[Subroutine]
+		private void Read() {
+			NES.Controller.Latch();
+			_index.Set(0);
+			GoSub(UpdateController);
+			if (_numPlayers >= 3) {
+				_index.Set(2);
+				GoSub(UpdateController);
+			}
+			if (_numPlayers >= 2) {
+				_index.Set(1);
+				GoSub(UpdateController);
+			}
+			if (_numPlayers >= 4) {
+				_index.Set(3);
+				GoSub(UpdateController);
+			}
+		}
+		[Subroutine]
+		[Clobbers(Register.A, Register.X, Register.Y)]
+		private void UpdateController() {
+			X.Set(_index);
+			_instances[X].StatePrev.Set(_instances[X].State);
+			Loop.Descend(Y.Set(8), () => {
+				A.Set(NES.Controller.One).LogicalShiftRight();
+				_instances[X].State.SetROL();
+			});
+
+			_instances[X].JustReleased.Set(_instances[X].State.Xor(0xFF).And(_instances[X].StatePrev));
+			_instances[X].JustPressed.Set(_instances[X].StatePrev.Xor(0xFF).And(_instances[X].State));
+		}
+		public Gamepad this[IndexingRegisterBase offset] => _instances[offset];
+		public Gamepad this[int offset] => _instances[offset];
+	}
+
+	[Obsolete]
+	public static class Gamepads_old {
 		public static int NumPlayers = 4;
 		public static StructOfArrays<Gamepad> Player;
 		public static VByte GamepadIndex = VByte.New(GlobalZp, "gamepad_index");
 
-		static Gamepads() {
+		static Gamepads_old() {
 			Player = StructOfArrays<Gamepad>.New("gamepadData", 4).Dim(GlobalZp);
 		}
 
@@ -26,6 +84,7 @@ namespace NESSharp.Common.Input {
 			
 		//}
 		//[RegParam(Register.A, "Bank to switch to")]
+
 		[Subroutine]
 		public static void Read() {
 			NES.Controller.Latch();
@@ -60,24 +119,15 @@ namespace NESSharp.Common.Input {
 
 		[Subroutine]
 		public static void UpdateController() {
-			Y.Set(GamepadIndex);
-			Player[Y].StatePrev.Set(Player[Y].State);
-			X.Set(8);
-			//TODO: make more loop options to avoid manual locking
-			//X.Lock();
-			Loop.Do(() => {
-				Stack.Preserve(X, () => {
-					A.Set(NES.Controller.One).LogicalShiftRight();
-					Player[Y].State.SetROL();
-				});
-				//X.Unlock();
-				X--;
-				//X.Lock();
-			}).While(() => X.NotEquals(0));
-			//X.Unlock();
+			X.Set(GamepadIndex);
+			Player[X].StatePrev.Set(Player[X].State);
+			Loop.Descend(Y.Set(8), () => {
+				A.Set(NES.Controller.One).LogicalShiftRight();
+				Player[X].State.SetROL();
+			});
 
-			Player[Y].JustReleased.Set(Player[Y].State.Xor(0xFF).And(Player[Y].StatePrev));
-			Player[Y].JustPressed.Set(Player[Y].StatePrev.Xor(0xFF).And(Player[Y].State));
+			Player[X].JustReleased.Set(Player[X].State.Xor(0xFF).And(Player[X].StatePrev));
+			Player[X].JustPressed.Set(Player[X].StatePrev.Xor(0xFF).And(Player[X].State));
 		}
 	}
 	public static class GamepadsOnePlayer {

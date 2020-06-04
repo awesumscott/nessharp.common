@@ -10,7 +10,7 @@ namespace NESSharp.Common.Mapper30 {
 
 		[Dependencies]
 		public static void Variables() {
-			GraphicsPtr = Ptr.New("GraphicsPtr");
+			GraphicsPtr = Ptr.New(GlobalZp, "GraphicsPtr");
 		}
 		public static Address Bank;
 		[RegParam(Register.A, "Bank to switch to")]

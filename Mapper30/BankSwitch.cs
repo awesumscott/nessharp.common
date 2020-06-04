@@ -48,11 +48,11 @@ namespace NESSharp.Common.Mapper30 {
 		[Subroutine]
 		private static void _BankCall() {
 			//X = bankcallfunc ID
-			A.Set(BankLabel.Offset(X));
+			A.Set(BankLabel[X]);
 			BankSwitching.SwitchPrgTo(A);
-			A.Set(SubHiLabel.Offset(X));
+			A.Set(SubHiLabel[X]);
 			Stack.Backup(A);
-			A.Set(SubLoLabel.Offset(X));
+			A.Set(SubLoLabel[X]);
 			Stack.Backup(A);
 		}
 		public void Call(OpLabel lbl) {
@@ -104,7 +104,7 @@ namespace NESSharp.Common.Mapper30 {
 		//public static void Init() {
 		//	Comment("Load BSCAR into RAM");
 		//	RepeatX(0, 15, () => {
-		//		_BSCARSub[X].Set(LabelFor(_BankSwitchCallAndRestore).Offset(X));
+		//		_BSCARSub[X].Set(LabelFor(_BankSwitchCallAndRestore)[X]);
 		//	});
 		//}
 
@@ -118,7 +118,7 @@ namespace NESSharp.Common.Mapper30 {
 			Y.Set(A);
 			Bank.Set(Y);
 			Use(Label["BankSwitchNoSave"]);
-			LabelFor(_BankTable).Offset(Y).Set(LabelFor(_BankTable).Offset(Y));
+			LabelFor(_BankTable)[Y].Set(LabelFor(_BankTable)[Y]);
 		}
 
 		[DataSection]

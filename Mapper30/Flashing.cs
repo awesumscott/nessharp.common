@@ -8,7 +8,7 @@ namespace NESSharp.Common.Mapper30 {
 	public static class Flashing {
 		//These variables need to be located in the Zero Page, due to the need for Indirect addressing.
 		private static VByte TargetBank		= VByte.New(GlobalZp, "Flashing_TargetBank");
-		private static Ptr TargetAddress	= Ptr.New("Flashing_TargetAddress");
+		private static Ptr TargetAddress	= Ptr.New(GlobalZp, "Flashing_TargetAddress");
 		private static VByte SourceAddress	= VByte.New(GlobalZp, "Flashing_SourceAddress");
 		private static VByte ReturnBank		= VByte.New(GlobalZp, "Flashing_ReturnBank");
 		private static Address FlashRamPage	= Addr(0x0700);
@@ -126,7 +126,7 @@ namespace NESSharp.Common.Mapper30 {
 			//Copy funcs to those RAM chunks
 			Y.Set(0);
 			Loop.Do(() => {
-				AddrWriteVerify[Y].Set(A.Set(LabelFor(_WriteVerify).Offset(Y)));
+				AddrWriteVerify[Y].Set(A.Set(LabelFor(_WriteVerify)[Y]));
 				Y++;
 				CPU6502.CPY(_lenTotalRamLength);
 			}).While(() => Y.NotEquals(0));

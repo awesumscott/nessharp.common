@@ -15,5 +15,15 @@ namespace NESSharp.Common {
 				})
 			);
 		}
+		public static RegisterA Negate(RegisterA _) {
+			A.Xor(0xFF);
+			Carry.Set();
+			return A.ADC(0);
+		}
+		public static RegisterA Negate(VByte v) {
+			A.Set(v).Xor(0xFF);
+			Carry.Set();
+			return A.ADC(0);
+		}
 	}
 }

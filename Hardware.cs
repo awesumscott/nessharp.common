@@ -14,7 +14,7 @@ namespace NESSharp.Common {
 			WaitForVBlank();
 			NES.PPU.SetAddress(NES.MemoryMap.Palette);
 			Loop.RepeatX(0, 32, () => {
-				NES.PPU.Data.Set(LabelFor(paletteDataSection).Offset(X));
+				NES.PPU.Data.Set(LabelFor(paletteDataSection)[X]);
 			});
 		}
 
@@ -52,9 +52,7 @@ namespace NESSharp.Common {
 				});
 			}).While(() => A.Equals(nmis));
 
-			A.Set(Y);
-			Carry.Set();
-			A.SBC(10).Equals(3);
+			A.Set(Y).Subtract(10).Equals(3);
 			If(() => Carry.IsSet(), () => {
 				A.Set(3);
 			});
