@@ -11,6 +11,12 @@ namespace NESSharp.Common {
 					return DivideByTwo();
 				case 4:
 					return DivideByFour();
+				case 8:
+					return DivideByEight();
+				case 16:
+					return DivideBySixteen();
+				case 32:
+					return DivideByThirtyTwo();
 			}
 			throw new NotImplementedException();
 		}
@@ -54,7 +60,7 @@ namespace NESSharp.Common {
 		public static RegisterA DivideByEight() {
 			//3 bytes, 6 cycles
 			DivideByFour();
-			return DivideByFour();
+			return DivideByTwo();
 		}
 		public static RegisterA DivideByTen() {
 			//17 bytes, 30 cycles
@@ -66,11 +72,11 @@ namespace NESSharp.Common {
 		}
 		public static RegisterA DivideBySixteen() {
 			DivideByEight();
-			return DivideByEight();
+			return DivideByTwo();
 		}
 		public static RegisterA DivideByThirtyTwo() {
 			DivideBySixteen();
-			return DivideBySixteen();
+			return DivideByTwo();
 		}
 	}
 }

@@ -45,11 +45,11 @@ namespace NESSharp.Common.Input {
 			}
 			if (_numPlayers >= 2) {
 				_index.Set(1);
-				GoSub(UpdateController);
+				GoSub(UpdateController2);
 			}
 			if (_numPlayers >= 4) {
 				_index.Set(3);
-				GoSub(UpdateController);
+				GoSub(UpdateController2);
 			}
 		}
 		[Subroutine]
@@ -58,7 +58,28 @@ namespace NESSharp.Common.Input {
 			X.Set(_index);
 			_instances[X].StatePrev.Set(_instances[X].State);
 			Loop.Descend(Y.Set(8), () => {
+				//If(	Option(() => _index.LessThan(2), () => {
+				//		A.Set(NES.Controller.One).LogicalShiftRight();
+				//	}),
+				//	Default(() => {
+				//		A.Set(NES.Controller.One).LogicalShiftRight();
+				//	})
+				//)
+				
 				A.Set(NES.Controller.One).LogicalShiftRight();
+				_instances[X].State.SetROL();
+			});
+
+			_instances[X].JustReleased.Set(_instances[X].State.Xor(0xFF).And(_instances[X].StatePrev));
+			_instances[X].JustPressed.Set(_instances[X].StatePrev.Xor(0xFF).And(_instances[X].State));
+		}
+		[Subroutine]
+		[Clobbers(Register.A, Register.X, Register.Y)]
+		private void UpdateController2() {
+			X.Set(_index);
+			_instances[X].StatePrev.Set(_instances[X].State);
+			Loop.Descend(Y.Set(8), () => {
+				A.Set(NES.Controller.Two).LogicalShiftRight();
 				_instances[X].State.SetROL();
 			});
 
