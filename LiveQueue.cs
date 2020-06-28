@@ -10,7 +10,7 @@ namespace NESSharp.Common {
 		public VByte ReadIndex;
 		//private Var8 _done;
 		private bool _isReading = false, _isWriting = false;
-		private IndexingRegisterBase _indexReg = null;
+		private IndexingRegister _indexReg = null;
 		public LiveQueue() {
 		}
 		public static LiveQueue New(RAM Zp, RAM Ram, RAM valuesRam, U8 length, string name, U8 stopVal) {
@@ -31,7 +31,7 @@ namespace NESSharp.Common {
 			Values[0].Set(_stopVal);
 			//_done.Set(1);
 		}
-		public void PushOnce(IndexingRegisterBase indexReg, U8 u8) {
+		public void PushOnce(IndexingRegister indexReg, U8 u8) {
 			if (indexReg is RegisterX) {
 				X.Set(WriteIndex);
 				Values[X].Set(u8);
@@ -143,7 +143,7 @@ namespace NESSharp.Common {
 		}
 
 		
-		public void PushStart(IndexingRegisterBase indexReg) {
+		public void PushStart(IndexingRegister indexReg) {
 			_indexReg = indexReg;
 			_isWriting = true;
 			if (_indexReg is RegisterX) {
@@ -178,7 +178,7 @@ namespace NESSharp.Common {
 			//}
 			return Values[_indexReg];
 		}
-		public VByte Unsafe_Peek(IndexingRegisterBase indexReg) {
+		public VByte Unsafe_Peek(IndexingRegister indexReg) {
 			//if (indexReg is RegisterX) {
 			//	return Values[X];
 			//} else if (indexReg is RegisterY) {
@@ -203,7 +203,7 @@ namespace NESSharp.Common {
 			}
 		}
 
-		public void Write(IndexingRegisterBase indexReg, Action block) {
+		public void Write(IndexingRegister indexReg, Action block) {
 			if (_isReading || _isWriting)
 				throw new Exception("Queue is already reading or writing");
 			_isWriting = true;
@@ -223,7 +223,7 @@ namespace NESSharp.Common {
 			_isWriting = false;
 		}
 
-		public void Read(IndexingRegisterBase indexReg, Action block) {
+		public void Read(IndexingRegister indexReg, Action block) {
 			if (_isReading || _isWriting)
 				throw new Exception("Queue is already reading or writing");
 			_isReading = true;

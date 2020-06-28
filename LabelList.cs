@@ -46,7 +46,7 @@ namespace NESSharp.Common {
 		}
 		
 		public void GoTo(U8 index) => GoTo_Indirect(this[X.Set(index)]);
-		public void GoTo(IndexingRegisterBase reg) => GoTo_Indirect(this[reg]);
+		public void GoTo(IndexingRegister reg) => GoTo_Indirect(this[reg]);
 		//public void GoTo(RegisterBase r) => GoTo_Indirect(this[r]);
 		
 		public void GoSub(RegisterY y) {
@@ -68,7 +68,7 @@ namespace NESSharp.Common {
 			//GoTo_Indirect(this[X.Set(index)]);
 		}
 
-		public VWord this[IndexingRegisterBase reg] {
+		public VWord this[IndexingRegister reg] {
 			get {
 				Temp[0].Set(_lo[reg]);
 				Temp[1].Set(_hi[reg]);

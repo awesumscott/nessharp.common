@@ -9,9 +9,10 @@ namespace NESSharp.Common {
 				CPU6502.BIT(NES.PPU.Status);
 			}).While(() => Condition.IsPositive);
 		}
-		public static void LoadPalettes(Action paletteDataSection) {
+		public static void LoadPalettes(Action paletteDataSection, bool waitForVBlank = true) {
 			Comment("Load palettes");
-			WaitForVBlank();
+			if (waitForVBlank)
+				WaitForVBlank();
 			NES.PPU.SetAddress(NES.MemoryMap.Palette);
 			Loop.RepeatX(0, 32, () => {
 				NES.PPU.Data.Set(LabelFor(paletteDataSection)[X]);
@@ -19,7 +20,7 @@ namespace NESSharp.Common {
 		}
 
 		public static void ClearRAM() {
-			Loop.RepeatX(0, 255, () => {
+			Loop.RepeatX(0, 256, () => {
 				Addr(0x0000)[X].Set(0);
 				Addr(0x0100)[X].Set(0);
 				Addr(0x0300)[X].Set(0);

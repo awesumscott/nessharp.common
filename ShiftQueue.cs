@@ -41,10 +41,11 @@ namespace NESSharp.Common {
 			X.Set(0);
 			Loop.AscendWhile(X, () => X.NotEquals((U8)(Values.Length - 1)), () => {
 				//Get next value
-				X++;
-				A.Set(Values[X]);
-				//Store in current location
-				X--;
+				X.State.Unsafe(() => { //indicate X modification needs careful attention
+					X++;
+					A.Set(Values[X]); //Store in current location
+					X--;
+				});
 				Values[X].Set(A);
 			});
 			Comment("Last command is empty");

@@ -86,7 +86,7 @@ namespace NESSharp.Common.Input {
 			_instances[X].JustReleased.Set(_instances[X].State.Xor(0xFF).And(_instances[X].StatePrev));
 			_instances[X].JustPressed.Set(_instances[X].StatePrev.Xor(0xFF).And(_instances[X].State));
 		}
-		public Gamepad this[IndexingRegisterBase offset] => _instances[offset];
+		public Gamepad this[IndexingRegister offset] => _instances[offset];
 		public Gamepad this[int offset] => _instances[offset];
 	}
 
