@@ -1,8 +1,5 @@
 ﻿using NESSharp.Core;
-using NESSharp.Common;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using static NESSharp.Core.AL;
 
 namespace NESSharp.Common {
@@ -27,7 +24,7 @@ namespace NESSharp.Common {
 	*/
 
 
-	public class ShadowAttributeTable {
+	public class ShadowAttributeTable_v2_WIP : Module {
 		[Flags]
 		public enum NameTable {
 			NT0	=	0b0001,
@@ -36,12 +33,12 @@ namespace NESSharp.Common {
 			NT3	=	0b1000
 		}
 
-		public static VWord PPUAddress;
-		public static Array<VByte> Table;
-		private static VByte _temp;
+		public VWord PPUAddress;
+		public Array<VByte> Table;
+		private VByte _temp;
 		private bool _twoHigh = false, _twoWide = false;
 		private bool _xAsc, _yAsc;
-		public ShadowAttributeTable(RAM r, NameTable nts) {
+		public ShadowAttributeTable_v2_WIP(RAM r, NameTable nts) {
 			var ntCount = 0;
 			var nt0 = nts.HasFlag(NameTable.NT0);
 			var nt1 = nts.HasFlag(NameTable.NT1);
@@ -70,18 +67,19 @@ namespace NESSharp.Common {
 		}
 	}
 
+	public class ShadowAttributeTable_v1 : Module {
+		public VWord PPUAddress;
+		public Array<VByte> Table;
+		private VByte _temp;
 
-	public static class ShadowAttributeTable_old {
-		public static VWord PPUAddress;
-		public static Array<VByte> Table;
-		private static VByte _temp;
-		static ShadowAttributeTable_old() {
-			PPUAddress = VWord.New(GlobalRam, "ShadowAttributeTable_PPUAddress");
-			Table	= Array<VByte>.New(64, GlobalRam, "ShadowAttributeTable_attributeTable");
-			_temp = VByte.New(GlobalRam, "ShadowAttributeTable_temp");
+		[Dependencies]
+		private void Dependencies() {
+			PPUAddress = VWord.New(Ram, $"{nameof(ShadowAttributeTable_v1)}_{nameof(PPUAddress)}");
+			Table = Array<VByte>.New(64, Ram, $"{nameof(ShadowAttributeTable_v1)}_{nameof(Table)}");
+			_temp = VByte.New(Ram, $"{nameof(ShadowAttributeTable_v1)}{nameof(_temp)}");
 		}
 
-		public static void Clear() {
+		public void Clear() {
 			Comment("Clear attribute table");
 			Loop.Descend_Pre(X.Set(Table.Length), () => {
 				Table[X].Set(0);
@@ -89,40 +87,67 @@ namespace NESSharp.Common {
 		}
 
 		[Subroutine]
-		public static void UpdateAttributeTableImmediately() {
+		public void UpdateAttributeTableImmediately() {
 			NES.PPU.SetHorizontalWrite();
 			NES.PPU.SetAddress(0x23C0);
-			//Something is wrong with this partially unrolled version
-			//AscendWhile(X.Set(0), () => X.NotEquals((U8)(Table.Length / 4)), () => {
-			//	NES.PPU.Data.Set(Table[X]);
-			//	X++;
-			//	NES.PPU.Data.Set(Table[X]);
-			//	X++;
-			//	NES.PPU.Data.Set(Table[X]);
-			//	X++;
-			//	NES.PPU.Data.Set(Table[X]);
-			//});
 			Loop.AscendWhile(X.Set(0), () => X.NotEquals((U8)Table.Length), () => {
 				NES.PPU.Data.Set(Table[X]);
 			});
 		}
-
-		[Subroutine]
-		public static void UpdateAttr() {
-			//PPUAddress = addr of bg tile to update
-			
-			//Stack.Backup(Register.A);
-			
-			_temp.Set(0xC0); //starting lo of attr address
-			If(() => A.Set(PPUAddress.Lo).IsNegative(), () => {
-				//_temp.SetAdd(8);
-				_temp.Set(z => z.Add(8));
-			});
-			_temp.Set(z => z.Add(PPUAddress.Lo.And(0x1F).Divide(4)));
-			_temp.Set(z => z.Add(PPUAddress.Hi.And(0x0F).Multiply(4)));
-
-			//NES.PPU.SetAddress()
-			//Stack.Restore(Register.A);
-		}
 	}
 }
+
+//public static class ShadowAttributeTable_old {
+//	public static VWord PPUAddress;
+//	public static Array<VByte> Table;
+//	private static VByte _temp;
+//	static ShadowAttributeTable_old() {
+//		PPUAddress = VWord.New(GlobalRam, "ShadowAttributeTable_PPUAddress");
+//		Table	= Array<VByte>.New(64, GlobalRam, "ShadowAttributeTable_attributeTable");
+//		_temp = VByte.New(GlobalRam, "ShadowAttributeTable_temp");
+//	}
+
+//	public static void Clear() {
+//		Comment("Clear attribute table");
+//		Loop.Descend_Pre(X.Set(Table.Length), () => {
+//			Table[X].Set(0);
+//		});
+//	}
+
+//	[Subroutine]
+//	public static void UpdateAttributeTableImmediately() {
+//		NES.PPU.SetHorizontalWrite();
+//		NES.PPU.SetAddress(0x23C0);
+//		//Something is wrong with this partially unrolled version
+//		//AscendWhile(X.Set(0), () => X.NotEquals((U8)(Table.Length / 4)), () => {
+//		//	NES.PPU.Data.Set(Table[X]);
+//		//	X++;
+//		//	NES.PPU.Data.Set(Table[X]);
+//		//	X++;
+//		//	NES.PPU.Data.Set(Table[X]);
+//		//	X++;
+//		//	NES.PPU.Data.Set(Table[X]);
+//		//});
+//		Loop.AscendWhile(X.Set(0), () => X.NotEquals((U8)Table.Length), () => {
+//			NES.PPU.Data.Set(Table[X]);
+//		});
+//	}
+
+//	[Subroutine]
+//	public static void UpdateAttr() {
+//		//PPUAddress = addr of bg tile to update
+			
+//		//Stack.Backup(Register.A);
+			
+//		_temp.Set(0xC0); //starting lo of attr address
+//		If(() => A.Set(PPUAddress.Lo).IsNegative(), () => {
+//			//_temp.SetAdd(8);
+//			_temp.Set(z => z.Add(8));
+//		});
+//		_temp.Set(z => z.Add(PPUAddress.Lo.And(0x1F).Divide(4)));
+//		_temp.Set(z => z.Add(PPUAddress.Hi.And(0x0F).Multiply(4)));
+
+//		//NES.PPU.SetAddress()
+//		//Stack.Restore(Register.A);
+//	}
+//}

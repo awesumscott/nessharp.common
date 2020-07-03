@@ -47,6 +47,7 @@ namespace NESSharp.Common.Mapper30 {
 			X.Set(BankSwitching.Bank);
 			BankSwitching.SwitchTo(A);
 			//A.Set(Bank);
+			A.State.Push();		//A is needed later and is backed up as a consequence of backing up X
 			Stack.Backup(Register.X);
 
 			//TODO: finish after implementing Pointer
@@ -58,6 +59,10 @@ namespace NESSharp.Common.Mapper30 {
 			//GoSub(ChrCopy);
 
 			Stack.Restore(Register.A);
+			
+			X.State.Pop();		//get rid of the unneeded X value
+			X.State.Alter();	//indicate it's now unknown
+
 			BankSwitching.SwitchTo(A);
 		}
 		[Subroutine]
@@ -70,6 +75,7 @@ namespace NESSharp.Common.Mapper30 {
 			X.Set(BankSwitching.Bank);
 			BankSwitching.SwitchTo(A);
 			//A.Set(Bank);
+			A.State.Push();		//A is needed later and is backed up as a consequence of backing up X
 			Stack.Backup(Register.X);
 
 			//TODO: finish after implementing Pointer
@@ -81,6 +87,10 @@ namespace NESSharp.Common.Mapper30 {
 			//GoSub(ChrCopy);
 
 			Stack.Restore(Register.A);
+			
+			X.State.Pop();		//get rid of the unneeded X value
+			X.State.Alter();	//indicate it's now unknown
+
 			BankSwitching.SwitchTo(A);
 		}
 		[Subroutine]

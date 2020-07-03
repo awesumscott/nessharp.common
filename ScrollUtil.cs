@@ -6,10 +6,7 @@ using static NESSharp.Core.AL;
 
 namespace NESSharp.Common {
 	//TODO: figure out if this should either be explicitly named to indicate it's for 4 screen scrolling, or if it should support other options
-	public static class Scrolling {
-		[Dependencies]
-		public static void Variables() {
-		}
+	public static class ScrollUtil {
 		public static void Update() {
 			NES.PPU.ScrollTo(NES.PPU.LazyScrollX, NES.PPU.LazyScrollY);
 		}
