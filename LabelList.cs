@@ -7,17 +7,17 @@ using System.Linq;
 
 namespace NESSharp.Common {
 	public class LabelList {
-		private OpLabel[] _labels;
-		private OpLabel _lo, _hi;
-		private OpLabel _stackJumpHelperFunc = null;
+		private Label[] _labels;
+		private Label _lo, _hi;
+		private Label _stackJumpHelperFunc = null;
 		public LabelList(params Action[] methods) {
-			_lo = Label.New();
-			_hi = Label.New();
+			_lo = Labels.New();
+			_hi = Labels.New();
 			_labels = methods.Select(LabelFor).ToArray();
 		}
-		public LabelList(params OpLabel[] labels) {
-			_lo = Label.New();
-			_hi = Label.New();
+		public LabelList(params Label[] labels) {
+			_lo = Labels.New();
+			_hi = Labels.New();
 			_labels = labels;
 		}
 		public void WriteList() {
@@ -29,14 +29,14 @@ namespace NESSharp.Common {
 		}
 		public void WriteStackJumpList() {
 			Use(_lo);
-			Raw(_labels.Select(x => x.Lo(-1)).ToArray());
+			Raw(_labels.Select(x => x.Offset(-1).Lo()).ToArray());
 			
 			Use(_hi);
-			Raw(_labels.Select(x => x.Hi(-1)).ToArray());
+			Raw(_labels.Select(x => x.Offset(-1).Hi()).ToArray());
 
 
 			//Write the helper function for stack jumps
-			_stackJumpHelperFunc = Label.New();
+			_stackJumpHelperFunc = Labels.New();
 			Use(_stackJumpHelperFunc);
 			A.Set(_hi[X]);
 			Stack.Backup(Register.A);

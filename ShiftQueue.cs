@@ -19,7 +19,7 @@ namespace NESSharp.Common {
 		}
 
 		public void Push(VByte v) {
-			var lblBreak = Label.New();
+			var lblBreak = Labels.New();
 			X.Set(0);
 			Loop.AscendWhile(X, () => X.NotEquals((U8)Values.Length), () => {
 				If(() => Values[X].Equals(_clearVal), () => {

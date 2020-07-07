@@ -1,7 +1,6 @@
 ﻿using NESSharp.Core;
 using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Linq;
 using static NESSharp.Core.AL;
 
@@ -21,15 +20,15 @@ namespace NESSharp.Common.Mapper30 {
 		//	//TODO: add var names to ASM output here
 		//	base.Add(name, bs);
 		//}
-		public static OpLabel BankLabel;
-		public static OpLabel SubLoLabel;
-		public static OpLabel SubHiLabel;
+		public static Label BankLabel;
+		public static Label SubLoLabel;
+		public static Label SubHiLabel;
 		private List<BankedSubroutine> _list = new List<BankedSubroutine>();
 
 		static BankSwitchTable() {
-			BankLabel = Label["BankCallTable_Bank"];
-			SubLoLabel = Label["BankCallTable_SubLo"];
-			SubHiLabel = Label["BankCallTable_SubHi"];
+			BankLabel = Labels["BankCallTable_Bank"];
+			SubLoLabel = Labels["BankCallTable_SubLo"];
+			SubHiLabel = Labels["BankCallTable_SubHi"];
 		}
 		public void Add(BankedSubroutine bs) {
 			_list.Add(bs);
@@ -40,9 +39,9 @@ namespace NESSharp.Common.Mapper30 {
 			//Raw(this.Cast<System.Collections.DictionaryEntry>().Select(x => (byte)((BankedSubroutine)x.Value).Bank).ToArray()); //OrderedDictionary version
 			Raw(_list.Select(x => (byte)x.Bank).ToArray()); //List<BankedSubroutine> version
 			Use(SubLoLabel);
-			Raw(_list.Select(x => LabelFor(x.Method).Lo(-1)).ToArray());
+			Raw(_list.Select(x => LabelFor(x.Method).Offset(-1).Lo()).ToArray());
 			Use(SubHiLabel);
-			Raw(_list.Select(x => LabelFor(x.Method).Hi(-1)).ToArray());
+			Raw(_list.Select(x => LabelFor(x.Method).Offset(-1).Hi()).ToArray());
 		}
 		public U8 IndexOf(object name) => (U8)_list.IndexOf(_list.Where(x => x.Key.ToString() == name.ToString()).First());
 		[Subroutine]
@@ -55,8 +54,8 @@ namespace NESSharp.Common.Mapper30 {
 			A.Set(SubLoLabel[X]);
 			Stack.Backup(A);
 		}
-		public void Call(OpLabel lbl) {
-			X.Set(lbl.Reference());
+		public void Call(Label lbl) {
+			X.Set(lbl);
 			GoSub(_BankCall);
 		}
 		public void Call(OpLabelIndexed oli) {
@@ -117,7 +116,7 @@ namespace NESSharp.Common.Mapper30 {
 			//});
 			Y.Set(A);
 			Bank.Set(Y);
-			Use(Label["BankSwitchNoSave"]);
+			Use(Labels["BankSwitchNoSave"]);
 			LabelFor(_BankTable)[Y].Set(LabelFor(_BankTable)[Y]);
 		}
 

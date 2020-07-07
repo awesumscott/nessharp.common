@@ -1,7 +1,4 @@
 ﻿using NESSharp.Core;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using static NESSharp.Core.AL;
 
 namespace NESSharp.Common.Mapper30 {
@@ -158,7 +155,7 @@ namespace NESSharp.Common.Mapper30 {
 			Y.Set(addr.Lo);
 			GoSub(AddrWriteByte);
 		}
-		public static void WriteByte(U8 bank, OpLabel addr, object value) {
+		public static void WriteByte(U8 bank, Label addr, object value) {
 			TargetAddress.Lo.Set(0);
 			TargetAddress.Hi.Set(addr.Hi());
 			TargetBank.Set(bank);
