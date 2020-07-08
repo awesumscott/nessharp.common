@@ -58,7 +58,7 @@ namespace NESSharp.Common.Mapper30 {
 			X.Set(lbl);
 			GoSub(_BankCall);
 		}
-		public void Call(OpLabelIndexed oli) {
+		public void Call(LabelIndexed oli) {
 			X.Set(A.Set(oli));
 			GoSub(_BankCall);
 		}
