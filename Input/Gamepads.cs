@@ -56,7 +56,7 @@ namespace NESSharp.Common.Input {
 		private void UpdateController() {
 			X.Set(_index);
 			_instances[X].StatePrev.Set(_instances[X].State);
-			Loop.Descend(Y.Set(8), () => {
+			Loop.Descend(Y.Set(8), _ => {
 				//If(	Option(() => _index.LessThan(2), () => {
 				//		A.Set(NES.Controller.One).LogicalShiftRight();
 				//	}),
@@ -77,7 +77,7 @@ namespace NESSharp.Common.Input {
 		private void UpdateController2() {
 			X.Set(_index);
 			_instances[X].StatePrev.Set(_instances[X].State);
-			Loop.Descend(Y.Set(8), () => {
+			Loop.Descend(Y.Set(8), _ => {
 				A.Set(NES.Controller.Two).LogicalShiftRight();
 				_instances[X].State.SetROL();
 			});

@@ -5,7 +5,7 @@ using static NESSharp.Core.AL;
 namespace NESSharp.Common {
 	public static class Hardware {
 		public static void WaitForVBlank() {
-			Loop.Do(() => {
+			Loop.Do(_ => {
 				CPU6502.BIT(NES.PPU.Status);
 			}).While(() => Condition.IsPositive);
 		}
@@ -14,13 +14,13 @@ namespace NESSharp.Common {
 			if (waitForVBlank)
 				WaitForVBlank();
 			NES.PPU.SetAddress(NES.MemoryMap.Palette);
-			Loop.RepeatX(0, 32, () => {
+			Loop.Repeat(X.Set(0), 32, _ => {
 				NES.PPU.Data.Set(LabelFor(paletteDataSection)[X]);
 			});
 		}
 
 		public static void ClearRAM() {
-			Loop.RepeatX(0, 256, () => {
+			Loop.Repeat(X.Set(0), 256, _ => {
 				Addr(0x0000)[X].Set(0);
 				Addr(0x0100)[X].Set(0);
 				Addr(0x0300)[X].Set(0);
@@ -40,7 +40,7 @@ namespace NESSharp.Common {
 			Loop.Do().While(() => A.Equals(nmis));
 			A.Set(nmis);
 			
-			Loop.Do(() => {
+			Loop.Do(_ => {
 				//Each iteration takes 11 cycles.
 				//NTSC NES:	29780 cycles or 2707 = $A93 iterations
 				//PAL NES:	33247 cycles or 3022 = $BCE iterations

@@ -26,8 +26,8 @@ namespace NESSharp.Common.Mapper30 {
 			//Ptr p = Globals.graphicsPtr;
 			//p.Bytes[1]++;
 
-			Loop.Do(() => {
-				Loop.Do(() => {
+			Loop.Do(_ => {
+				Loop.Do(_ => {
 					NES.PPU.Data.Set(GraphicsPtr[Y]);
 					Y++;
 					//TODO: more here

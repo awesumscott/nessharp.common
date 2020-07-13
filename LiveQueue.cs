@@ -8,11 +8,10 @@ namespace NESSharp.Common {
 		private U8 _stopVal = 0;
 		public VByte WriteIndex;
 		public VByte ReadIndex;
-		//private Var8 _done;
 		private bool _isReading = false, _isWriting = false;
 		private IndexingRegister _indexReg = null;
-		public LiveQueue() {
-		}
+		public LiveQueue() {}
+
 		//TODO: this doesn't really enforce length. Implement wrap if length != 0 (0 would indicate 256--full page)
 		public static LiveQueue New(RAM Zp, RAM Ram, RAM valuesRam, U8 length, string name, U8 stopVal) {
 			var bq = new LiveQueue();
@@ -30,7 +29,6 @@ namespace NESSharp.Common {
 			WriteIndex.Set(0);
 			ReadIndex.Set(0);
 			Values[0].Set(_stopVal);
-			//_done.Set(1);
 		}
 		public void PushOnce(IndexingRegister indexReg, U8 u8) {
 			if (indexReg is RegisterX) {
@@ -50,44 +48,14 @@ namespace NESSharp.Common {
 		public void Push(U8 u8) {
 			if (!_isWriting)
 				throw new Exception("Push can only be used within a LiveQueue.Write() block");
-			if (_indexReg is RegisterX) {
-				Values[X].Set(u8);
-				X++;
-			} else if (_indexReg is RegisterY) {
-				Values[Y].Set(u8);
-				Y++;
-			}
-
-			//if (indexReg is RegisterX) {
-			//	X.Set(WriteIndex);
-			//	Values[X].Set(u8);
-			//	X++;
-			//} else if (indexReg is RegisterY) {
-			//	Y.Set(WriteIndex);
-			//	Values[Y].Set(u8);
-			//	Y++;
-			//}
+			Values[_indexReg].Set(u8);
+			_indexReg++;
 		}
 		public void Push(IResolvable<U8> v) {
 			if (!_isWriting)
 				throw new Exception("Push can only be used within a LiveQueue.Write() block");
-			if (_indexReg is RegisterX) {
-				Values[X].Set(v);
-				X++;
-			} else if (_indexReg is RegisterY) {
-				Values[Y].Set(v);
-				Y++;
-			}
-
-			//if (indexReg is RegisterX) {
-			//	X.Set(WriteIndex);
-			//	Values[X].Set(u8);
-			//	X++;
-			//} else if (indexReg is RegisterY) {
-			//	Y.Set(WriteIndex);
-			//	Values[Y].Set(u8);
-			//	Y++;
-			//}
+			Values[_indexReg].Set(v);
+			_indexReg++;
 		}
 		//public void Unsafe_Push(IndexingRegisterBase indexReg, U8 u8) {
 		//	if (indexReg is RegisterX) {
@@ -101,13 +69,8 @@ namespace NESSharp.Common {
 		public void Push(Address addr) {
 			if (!_isWriting)
 				throw new Exception("Push can only be used within a LiveQueue.Write() block");
-			if (_indexReg is RegisterX) {
-				Values[X].Set(addr);
-				X++;
-			} else if (_indexReg is RegisterY) {
-				Values[Y].Set(addr);
-				Y++;
-			}
+			Values[_indexReg].Set(addr);
+			_indexReg++;
 		}
 		//public void Unsafe_Push(IndexingRegisterBase indexReg, Address addr) {
 		//	if (indexReg is RegisterX) {
@@ -121,21 +84,17 @@ namespace NESSharp.Common {
 		public void Push(RegisterA a) {
 			if (!_isWriting)
 				throw new Exception("Push can only be used within a LiveQueue.Write() block");
-			if (_indexReg is RegisterX) {
-				Values[X].Set(a);
-				X++;
-			} else if (_indexReg is RegisterY) {
-				Values[Y].Set(a);
-				Y++;
-			}
+			Values[_indexReg].Set(a);
+			_indexReg++;
 		}
 
+		//TODO: handle either index in _indexReg
 		public void PushRangeOnce(Action action) {
 			var len = Length(action);
 			if (len > 255) throw new Exception("Block is too big, it must be 255 bytes or less.");
 			X.Set(WriteIndex);
 			TempPtr0.PointTo(LabelFor(action));
-			Loop.AscendWhile(Y.Set(0), () => Y.NotEquals((U8)len), () => {
+			Loop.AscendWhile(Y.Set(0), () => Y.NotEquals((U8)len), _ => {
 				Values[X].Set(TempPtr0[Y]);
 				X++;
 			});
@@ -143,7 +102,6 @@ namespace NESSharp.Common {
 			WriteIndex.Set(X);
 		}
 
-		
 		public void PushStart(IndexingRegister indexReg) {
 			_indexReg = indexReg;
 			_isWriting = true;
@@ -154,13 +112,6 @@ namespace NESSharp.Common {
 			}
 		}
 		public void PushDone() {
-			//if (_indexReg is RegisterX) {
-			//	Values[X].Set(_stopVal);
-			//	WriteIndex.Set(X);
-			//} else if (_indexReg is RegisterY) {
-			//	Values[Y].Set(_stopVal);
-			//	WriteIndex.Set(Y);
-			//}
 			Values[_indexReg].Set(_stopVal);
 			WriteIndex.Set(_indexReg);
 			_indexReg = null;
@@ -172,37 +123,15 @@ namespace NESSharp.Common {
 		public VByte Peek() {
 			if (!_isReading)
 				throw new Exception("Peek can only be used within a LiveQueue.Read() block");
-			//if (_indexReg is RegisterX) {
-			//	return Values[X];
-			//} else if (_indexReg is RegisterY) {
-			//	return Values[Y];
-			//}
 			return Values[_indexReg];
 		}
-		public VByte Unsafe_Peek(IndexingRegister indexReg) {
-			//if (indexReg is RegisterX) {
-			//	return Values[X];
-			//} else if (indexReg is RegisterY) {
-			//	return Values[Y];
-			//}
-			return Values[indexReg];
-		}
+		public VByte Unsafe_Peek(IndexingRegister indexReg) => Values[indexReg];
 		public void Pop() {
 			if (!_isReading)
 				throw new Exception("Pop can only be used within a LiveQueue.Read() block");
-			if (_indexReg is RegisterX) {
-				X++;
-			} else if (_indexReg is RegisterY) {
-				Y++;
-			}
+			_indexReg++;
 		}
-		public void Unsafe_Pop(RegisterBase indexReg) {
-			if (indexReg is RegisterX) {
-				X++;
-			} else if (indexReg is RegisterY) {
-				Y++;
-			}
-		}
+		public void Unsafe_Pop(IndexingRegister indexReg) => indexReg++;
 
 		public void Write(IndexingRegister indexReg, Action block) {
 			if (_isReading || _isWriting)

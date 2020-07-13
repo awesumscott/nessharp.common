@@ -13,22 +13,20 @@ namespace NESSharp.Common {
 		}
 
 		public void Clear() {
-			Loop.Descend_Pre(X.Set(Values.Length), () => {
+			Loop.Descend_Pre(X.Set(Values.Length), _ => {
 				Values[X].Set(_clearVal);
 			});
 		}
 
 		public void Push(VByte v) {
-			var lblBreak = Labels.New();
 			X.Set(0);
-			Loop.AscendWhile(X, () => X.NotEquals((U8)Values.Length), () => {
+			Loop.AscendWhile(X, () => X.NotEquals((U8)Values.Length), loop => {
 				If(() => Values[X].Equals(_clearVal), () => {
 					Comment("Add action to the end of the queue");
 					Values[X].Set(v);
-					GoTo(lblBreak);
+					GoTo(loop.Break);
 				});
 			});
-			Use(lblBreak);
 		}
 		
 		public RegisterA Peek() {
@@ -39,7 +37,7 @@ namespace NESSharp.Common {
 		public void Pop() {
 			Comment("Shift other actions left");
 			X.Set(0);
-			Loop.AscendWhile(X, () => X.NotEquals((U8)(Values.Length - 1)), () => {
+			Loop.AscendWhile(X, () => X.NotEquals((U8)(Values.Length - 1)), _ => {
 				//Get next value
 				X.State.Unsafe(() => { //indicate X modification needs careful attention
 					X++;
