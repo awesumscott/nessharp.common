@@ -20,6 +20,7 @@ namespace NESSharp.Common {
 			_hi = Labels.New();
 			_labels = labels;
 		}
+		public U8 Length => (U8)_labels.Length;
 		public void WriteList() {
 			Use(_lo);
 			Raw(_labels.Select(x => x.Lo()).ToArray());
@@ -75,6 +76,11 @@ namespace NESSharp.Common {
 				
 				//TODO: fix these up: VWord needs a Ref() func, and all need versions that can accept VByte lists
 				return VWord.Ref(Temp[0], 2);
+			}
+		}
+		public Label this[U8 index] {
+			get {
+				return _labels[index];
 			}
 		}
 	}
