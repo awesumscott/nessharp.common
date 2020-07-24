@@ -24,12 +24,14 @@ namespace NESSharp.Common {
 	}
 	public class Font {
 		private U8 _offset;
+		private U8 _space;
 		private string _chars;
-		public Font(U8 offset, string chars) {
+		public Font(U8 offset, string chars, int space = 0) {
 			_offset = offset;
+			_space = (U8)space;
 			_chars = chars;
 		}
-		public byte[] Encode(string text) => text.ToUpperInvariant().Select(x => (byte)(_chars.Contains(x) ? _chars.IndexOf(x) + _offset : 0)).ToArray();
+		public byte[] Encode(string text) => text.ToUpperInvariant().Select(x => (byte)(_chars.Contains(x) ? _chars.IndexOf(x) + _offset : (x == ' ' ? _space : 0))).ToArray();
 		public string EncodeString(string text) => string.Join(null, text.ToUpperInvariant().Select(x => (char)(_chars.Contains(x) ? _chars.IndexOf(x) + _offset : x)));
 	}
 	public static class DrawUtil {
@@ -49,7 +51,7 @@ namespace NESSharp.Common {
 			lineList.Add($"{(char)(byte)border.Left} {string.Empty.PadRight(maxLen, ' ')} {(char)(byte)border.Right}"); //lower border padding
 			lineList.Add($"{(char)(byte)border.BottomLeft}{string.Empty.PadRight(maxLen + 2, (char)(byte)border.Bottom)}{(char)(byte)border.BottomRight}"); //lower border
 
-			lineList = lineList.Select(x => font.EncodeString(x.Replace(' ', (char)0)).PadLeft(screenWidth - rightMargin, ' ').PadRight(screenWidth, ' ')).ToList();
+			lineList = lineList.Select(x => font.EncodeString(x).PadLeft(screenWidth - rightMargin, ' ').PadRight(screenWidth, ' ')).ToList();
 			return string.Join(null, lineList).ToArray().Select(x => (byte)x).ToArray();
 		}
 		public static byte[] GenerateCenteredText(Font font, params string[] lines) {
@@ -61,7 +63,7 @@ namespace NESSharp.Common {
 				var remainingWidth = screenWidth - len; //screen width in tiles - string length - 2 border tiles with 2 tiles padding
 				var leftMargin = (int)MathF.Floor(remainingWidth / 2);
 				var rightMargin = remainingWidth - leftMargin;
-				lineList.Add(font.EncodeString(line.Replace(' ', (char)0)).PadLeft(screenWidth - rightMargin, ' ').PadRight(screenWidth, ' '));
+				lineList.Add(font.EncodeString(line).PadLeft(screenWidth - rightMargin, ' ').PadRight(screenWidth, ' '));
 			}
 			return string.Join(null, lineList).ToArray().Select(x => (byte)x).ToArray();
 		}
