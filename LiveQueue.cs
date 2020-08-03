@@ -54,7 +54,7 @@ namespace NESSharp.Common {
 		public void Push(IResolvable<U8> v) {
 			if (!_isWriting)
 				throw new Exception("Push can only be used within a LiveQueue.Write() block");
-			Values[_indexReg].Set(v);
+			Values[_indexReg].Set((IOperand)v);
 			_indexReg++;
 		}
 		//public void Unsafe_Push(IndexingRegisterBase indexReg, U8 u8) {

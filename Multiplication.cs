@@ -10,11 +10,11 @@ namespace NESSharp.Common {
 			return A.Set(v).Multiply(n);
 		}
 		public static RegisterA Multiply(this RegisterA a, U8 n) {
-			switch (n) {
+			switch ((int)n) {
 				case 2:
 					Carry.Clear();
 					//return A.RotateLeft();
-					return A.ArithmeticShiftLeft(); //no need to CLC
+					return A.ASL(); //no need to CLC
 				case 4:
 					return A.Multiply(2).Multiply(2);
 				case 8:

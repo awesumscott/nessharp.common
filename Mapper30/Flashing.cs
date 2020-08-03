@@ -146,7 +146,7 @@ namespace NESSharp.Common.Mapper30 {
 		//	//ldy #<addr
 		//	GoSub(AddrWriteByte);
 		//}
-		public static void WriteByte(U8 bank, Address addr, object value) {
+		public static void WriteByte(U8 bank, Address addr, IOperand value) {
 			TargetAddress.Lo.Set(0);
 			TargetAddress.Hi.Set(addr.Hi);
 			TargetBank.Set(bank);
@@ -155,7 +155,7 @@ namespace NESSharp.Common.Mapper30 {
 			Y.Set(addr.Lo);
 			GoSub(AddrWriteByte);
 		}
-		public static void WriteByte(U8 bank, Label addr, object value) {
+		public static void WriteByte(U8 bank, Label addr, IOperand value) {
 			TargetAddress.Lo.Set(0);
 			TargetAddress.Hi.Set(addr.Hi());
 			TargetBank.Set(bank);

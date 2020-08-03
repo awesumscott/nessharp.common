@@ -65,7 +65,7 @@ namespace NESSharp.Common.Input {
 				//	})
 				//)
 				
-				A.Set(NES.Controller.One).LogicalShiftRight();
+				A.Set(NES.Controller.One).LSR();
 				_instances[X].State.SetROL();
 			});
 
@@ -78,7 +78,7 @@ namespace NESSharp.Common.Input {
 			X.Set(_index);
 			_instances[X].StatePrev.Set(_instances[X].State);
 			Loop.Descend(Y.Set(8), _ => {
-				A.Set(NES.Controller.Two).LogicalShiftRight();
+				A.Set(NES.Controller.Two).LSR();
 				_instances[X].State.SetROL();
 			});
 

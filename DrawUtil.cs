@@ -31,7 +31,7 @@ namespace NESSharp.Common {
 			_space = (U8)space;
 			_chars = chars;
 		}
-		public byte[] Encode(string text) => text.ToUpperInvariant().Select(x => (byte)(_chars.Contains(x) ? _chars.IndexOf(x) + _offset : (x == ' ' ? _space : 0))).ToArray();
+		public byte[] Encode(string text) => text.ToUpperInvariant().Select(x => (byte)(_chars.Contains(x) ? (U8)(_chars.IndexOf(x) + _offset) : (x == ' ' ? _space : (U8)0))).ToArray();
 		public string EncodeString(string text) => string.Join(null, text.ToUpperInvariant().Select(x => (char)(_chars.Contains(x) ? _chars.IndexOf(x) + _offset : x)));
 	}
 	public static class DrawUtil {

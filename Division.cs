@@ -6,7 +6,7 @@ using static NESSharp.Core.AL;
 namespace NESSharp.Common {
 	public static class Division {
 		public static RegisterA Divide(this RegisterA a, U8 v) {
-			switch (v) {
+			switch ((int)v) {
 				case 2:
 					return DivideByTwo();
 				case 4:
@@ -22,15 +22,15 @@ namespace NESSharp.Common {
 		}
 		public static RegisterA DivideByTwo() {
 			//1 byte, 2 cycles
-			return A.LogicalShiftRight();
+			return A.LSR();
 		}
 		public static RegisterA DivideByThree() {
 			//18 bytes, 30 cycles
 			Temp[0].Set(A);
-			return A.LogicalShiftRight().ADC(21).LogicalShiftRight()
-					.ADC(Temp[0]).ROR().LogicalShiftRight()
-					.ADC(Temp[0]).ROR().LogicalShiftRight()
-					.ADC(Temp[0]).ROR().LogicalShiftRight();
+			return A.LSR().ADC(21).LSR()
+					.ADC(Temp[0]).ROR().LSR()
+					.ADC(Temp[0]).ROR().LSR()
+					.ADC(Temp[0]).ROR().LSR();
 		}
 		public static RegisterA DivideByFour() {
 			//2 bytes, 4 cycles
@@ -40,10 +40,10 @@ namespace NESSharp.Common {
 		public static RegisterA DivideByFive() {
 			//18 bytes, 30 cycles
 			Temp[0].Set(A);
-			return A.LogicalShiftRight().ADC(13)
-					.ADC(Temp[0]).ROR().LogicalShiftRight().LogicalShiftRight()
+			return A.LSR().ADC(13)
+					.ADC(Temp[0]).ROR().LSR().LSR()
 					.ADC(Temp[0]).ROR()
-					.ADC(Temp[0]).ROR().LogicalShiftRight().LogicalShiftRight();
+					.ADC(Temp[0]).ROR().LSR().LSR();
 		}
 		public static RegisterA DivideBySix() {
 			//17 bytes, 30 cycles
@@ -53,9 +53,9 @@ namespace NESSharp.Common {
 		public static RegisterA DivideBySeven() {
 			//15 bytes, 27 cycles
 			Temp[0].Set(A);
-			return A.LogicalShiftRight().LogicalShiftRight().LogicalShiftRight()
-					.ADC(Temp[0]).ROR().LogicalShiftRight().LogicalShiftRight()
-					.ADC(Temp[0]).ROR().LogicalShiftRight().LogicalShiftRight();
+			return A.LSR().LSR().LSR()
+					.ADC(Temp[0]).ROR().LSR().LSR()
+					.ADC(Temp[0]).ROR().LSR().LSR();
 		}
 		public static RegisterA DivideByEight() {
 			//3 bytes, 6 cycles
@@ -64,11 +64,11 @@ namespace NESSharp.Common {
 		}
 		public static RegisterA DivideByTen() {
 			//17 bytes, 30 cycles
-			Temp[0].Set(A.LogicalShiftRight());
-			return A.LogicalShiftRight()
-					.ADC(Temp[0]).ROR().LogicalShiftRight().LogicalShiftRight()
+			Temp[0].Set(A.LSR());
+			return A.LSR()
+					.ADC(Temp[0]).ROR().LSR().LSR()
 					.ADC(Temp[0]).ROR()
-					.ADC(Temp[0]).ROR().LogicalShiftRight().LogicalShiftRight();
+					.ADC(Temp[0]).ROR().LSR().LSR();
 		}
 		public static RegisterA DivideBySixteen() {
 			DivideByEight();
