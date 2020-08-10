@@ -40,19 +40,19 @@ namespace NESSharp.Common {
 				NES.PPU.LazyControl.Set(z => z.Xor(0b10));
 			});
 		}
-		public static void AddX(U8 v) {
+		public static void AddX(IOperand v) {
 			NES.PPU.LazyScrollX.Set(z => z.Add(v));
 			_xAddCorrect();
 		}
-		public static void SubtractX(U8 v) {
+		public static void SubtractX(IOperand v) {
 			NES.PPU.LazyScrollX.Set(z => z.Subtract(v));
 			_xSubtractCorrect();
 		}
-		public static void AddY(U8 v) {
+		public static void AddY(IOperand v) {
 			NES.PPU.LazyScrollY.Set(z => z.Add(v));
 			_yAddCorrect();
 		}
-		public static void SubtractY(U8 v) {
+		public static void SubtractY(IOperand v) {
 			NES.PPU.LazyScrollY.Set(z => z.Subtract(v));
 			_ySubtractCorrect();
 		}
