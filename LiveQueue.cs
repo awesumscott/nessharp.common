@@ -45,18 +45,18 @@ namespace NESSharp.Common {
 				WriteIndex.Set(Y);
 			}
 		}
-		public void Push(U8 u8) {
+		public void Push(IOperand u8) {
 			if (!_isWriting)
 				throw new Exception("Push can only be used within a LiveQueue.Write() block");
 			Values[_indexReg].Set(u8);
 			_indexReg++;
 		}
-		public void Push(IResolvable<U8> v) {
-			if (!_isWriting)
-				throw new Exception("Push can only be used within a LiveQueue.Write() block");
-			Values[_indexReg].Set((IOperand)v);
-			_indexReg++;
-		}
+		//public void Push(IResolvable<U8> v) {
+		//	if (!_isWriting)
+		//		throw new Exception("Push can only be used within a LiveQueue.Write() block");
+		//	Values[_indexReg].Set((IOperand)v);
+		//	_indexReg++;
+		//}
 		//public void Unsafe_Push(IndexingRegisterBase indexReg, U8 u8) {
 		//	if (indexReg is RegisterX) {
 		//		Values[X].Set(u8);
