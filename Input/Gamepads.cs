@@ -1,4 +1,5 @@
 ﻿using NESSharp.Core;
+using System;
 using static NESSharp.Core.AL;
 
 namespace NESSharp.Common.Input {
@@ -11,6 +12,10 @@ namespace NESSharp.Common.Input {
 		public RegisterA Held(U8 buttons) => State.And(buttons);
 		public RegisterA Pressed(U8 buttons) => JustPressed.And(buttons);
 		public RegisterA Released(U8 buttons) => JustReleased.And(buttons);
+
+		public Func<RegisterA> IsHeld(U8 buttons) => () => State.And(buttons);
+		public Func<RegisterA> WasPressed(U8 buttons) => () => JustPressed.And(buttons);
+		public Func<RegisterA> WasReleased(U8 buttons) => () => JustReleased.And(buttons);
 	}
 
 	public class Gamepads : Module {

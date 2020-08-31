@@ -31,19 +31,12 @@ namespace NESSharp.Common {
 			Values[0].Set(_stopVal);
 		}
 		public void PushOnce(IndexingRegister indexReg, U8 u8) {
-			if (indexReg is RegisterX) {
-				X.Set(WriteIndex);
-				Values[X].Set(u8);
-				X++;
-				Values[X].Set(_stopVal);
-				WriteIndex.Set(X);
-			} else if (indexReg is RegisterY) {
-				Y.Set(WriteIndex);
-				Values[Y].Set(u8);
-				Y++;
-				Values[Y].Set(_stopVal);
-				WriteIndex.Set(Y);
-			}
+			if (indexReg is RegisterX)		X.Set(WriteIndex);
+			else if (indexReg is RegisterY)	Y.Set(WriteIndex);
+			Values[indexReg].Set(u8);
+			indexReg++;
+			Values[indexReg].Set(_stopVal);
+			WriteIndex.Set(indexReg);
 		}
 		public void Push(IOperand u8) {
 			if (!_isWriting)
@@ -51,36 +44,12 @@ namespace NESSharp.Common {
 			Values[_indexReg].Set(u8);
 			_indexReg++;
 		}
-		//public void Push(IResolvable<U8> v) {
-		//	if (!_isWriting)
-		//		throw new Exception("Push can only be used within a LiveQueue.Write() block");
-		//	Values[_indexReg].Set((IOperand)v);
-		//	_indexReg++;
-		//}
-		//public void Unsafe_Push(IndexingRegisterBase indexReg, U8 u8) {
-		//	if (indexReg is RegisterX) {
-		//		Values[X].Set(u8);
-		//		X++;
-		//	} else if (indexReg is RegisterY) {
-		//		Values[Y].Set(u8);
-		//		Y++;
-		//	}
-		//}
 		public void Push(Address addr) {
 			if (!_isWriting)
 				throw new Exception("Push can only be used within a LiveQueue.Write() block");
 			Values[_indexReg].Set(addr);
 			_indexReg++;
 		}
-		//public void Unsafe_Push(IndexingRegisterBase indexReg, Address addr) {
-		//	if (indexReg is RegisterX) {
-		//		Values[X].Set(addr);
-		//		X++;
-		//	} else if (indexReg is RegisterY) {
-		//		Values[Y].Set(addr);
-		//		Y++;
-		//	}
-		//}
 		public void Push(RegisterA a) {
 			if (!_isWriting)
 				throw new Exception("Push can only be used within a LiveQueue.Write() block");
@@ -138,17 +107,11 @@ namespace NESSharp.Common {
 				throw new Exception("Queue is already reading or writing");
 			_isWriting = true;
 			_indexReg = indexReg;
-			if (indexReg is RegisterX) {
-				X.Set(WriteIndex);
-				block.Invoke();
-				Values[X].Set(_stopVal);
-				WriteIndex.Set(X);
-			} else if (indexReg is RegisterY) {
-				Y.Set(WriteIndex);
-				block.Invoke();
-				Values[Y].Set(_stopVal);
-				WriteIndex.Set(Y);
-			}
+			if (indexReg is RegisterX)		X.Set(WriteIndex);
+			else if (indexReg is RegisterY)	Y.Set(WriteIndex);
+			block.Invoke();
+			Values[indexReg].Set(_stopVal);
+			WriteIndex.Set(indexReg);
 			_indexReg = null;
 			_isWriting = false;
 		}
@@ -158,15 +121,10 @@ namespace NESSharp.Common {
 				throw new Exception("Queue is already reading or writing");
 			_isReading = true;
 			_indexReg = indexReg;
-			if (indexReg is RegisterX) {
-				X.Set(ReadIndex);
-				block.Invoke();
-				ReadIndex.Set(X);
-			} else if (indexReg is RegisterY) {
-				Y.Set(ReadIndex);
-				block.Invoke();
-				ReadIndex.Set(Y);
-			}
+			if (indexReg is RegisterX)		X.Set(ReadIndex);
+			else if (indexReg is RegisterY)	Y.Set(ReadIndex);
+			block.Invoke();
+			ReadIndex.Set(indexReg);
 			_indexReg = null;
 			_isReading = false;
 		}
