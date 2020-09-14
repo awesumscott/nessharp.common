@@ -51,7 +51,7 @@ namespace NESSharp.Common {
 			lineList.Add($"{(char)(byte)border.Left} {string.Empty.PadRight(maxLen, ' ')} {(char)(byte)border.Right}"); //lower border padding
 			lineList.Add($"{(char)(byte)border.BottomLeft}{string.Empty.PadRight(maxLen + 2, (char)(byte)border.Bottom)}{(char)(byte)border.BottomRight}"); //lower border
 
-			lineList = lineList.Select(x => font.EncodeString(x).PadLeft(screenWidth - rightMargin, ' ').PadRight(screenWidth, ' ')).ToList();
+			lineList = lineList.Select(x => font.EncodeString(x.PadLeft(screenWidth - rightMargin, ' ').PadRight(screenWidth, ' '))).ToList();
 			return string.Join(null, lineList).ToArray().Select(x => (byte)x).ToArray();
 		}
 		public static byte[] GenerateCenteredText(Font font, params string[] lines) {
@@ -63,7 +63,7 @@ namespace NESSharp.Common {
 				var remainingWidth = screenWidth - len; //screen width in tiles - string length - 2 border tiles with 2 tiles padding
 				var leftMargin = (int)MathF.Floor(remainingWidth / 2);
 				var rightMargin = remainingWidth - leftMargin;
-				lineList.Add(font.EncodeString(line).PadLeft(screenWidth - rightMargin, ' ').PadRight(screenWidth, ' '));
+				lineList.Add(font.EncodeString(line.PadLeft(screenWidth - rightMargin, ' ').PadRight(screenWidth, ' ')));
 			}
 			return string.Join(null, lineList).ToArray().Select(x => (byte)x).ToArray();
 		}
