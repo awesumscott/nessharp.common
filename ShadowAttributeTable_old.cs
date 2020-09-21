@@ -75,7 +75,7 @@ namespace NESSharp.Common {
 		private VByte _lastAttrMask;		//cached mask from last attribute grid vacancy color
 		private VByte _currentAttrMask;	//current mask from last attribute grid vacancy color
 
-		private static class AttributeMaskID {
+		public static class AttributeMaskID {
 			public static U8 Vert			= 0b00000010;	//used with XOR as toggle, or with Or after using VertClear
 			public static U8 VertMask		= 0b11111101;
 			public static U8 Horiz			= 0b00000001;
