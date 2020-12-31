@@ -25,5 +25,18 @@ namespace NESSharp.Common {
 			Carry.Set();
 			return A.ADC(0);
 		}
+
+		public static RegisterA Abs(this RegisterA _) {
+			If(A.IsNegative(), () => {
+				A.Xor(0xFF).Add(1);
+			});
+			return A;
+		}
+		public static RegisterA Abs(IOperand o) {
+			If(A.Set(o).IsNegative(), () => {
+				A.Xor(0xFF).Add(1);
+			});
+			return A;
+		}
 	}
 }
