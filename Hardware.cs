@@ -5,7 +5,7 @@ using static NESSharp.Core.AL;
 namespace NESSharp.Common {
 	public static class Hardware {
 		public static void WaitForVBlank() {
-			Loop.Do(_ => {
+			Loop.Do_old(_ => {
 				CPU6502.BIT(NES.PPU.Status);
 			}).While(() => Condition.IsPositive);
 		}
@@ -37,10 +37,10 @@ namespace NESSharp.Common {
 			X.Set(0);
 			Y.Set(0);
 			A.Set(nmis);
-			Loop.Do().While(() => A.Equals(nmis));
+			Loop.Do_old().While(() => A.Equals(nmis));
 			A.Set(nmis);
 			
-			Loop.Do(_ => {
+			Loop.Do_old(_ => {
 				//Each iteration takes 11 cycles.
 				//NTSC NES:	29780 cycles or 2707 = $A93 iterations
 				//PAL NES:	33247 cycles or 3022 = $BCE iterations
@@ -48,15 +48,11 @@ namespace NESSharp.Common {
 				//so we can divide by $100 (rounding down), subtract ten,
 				//and end up with 0=ntsc, 1=pal, 2=dendy, 3=unknown
 				X++;
-				If(() => X.Equals(0), () => {
-					Y++;
-				});
+				If.True(() => X.Equals(0), () => Y++);
 			}).While(() => A.Equals(nmis));
 
 			A.Set(Y).Subtract(10).Equals(3);
-			If(() => Carry.IsSet(), () => {
-				A.Set(3);
-			});
+			If.True(Carry.IsSet, () => A.Set(3));
 		}
 	}
 }

@@ -7,12 +7,9 @@ using NESSharp.Core;
 namespace NESSharp.Common {
 	public static class Math {
 		public static void Clamp(VByte v, U8 low, U8 high) {
-			If(	Option(() => A.Set(v).LessThan(low), () => {
-					v.Set(low);
-				}),
-				Option(() => A.GreaterThan(high), () => {
-					v.Set(high);
-				})
+			If.Block(c => c
+				.True(() => A.Set(v).LessThan(low),	() => v.Set(low))
+				.True(() => A.GreaterThan(high),		() => v.Set(high))
 			);
 		}
 		public static RegisterA Negate(RegisterA _) {
@@ -27,15 +24,11 @@ namespace NESSharp.Common {
 		}
 
 		public static RegisterA Abs(this RegisterA _) {
-			If(A.IsNegative(), () => {
-				A.Xor(0xFF).Add(1);
-			});
+			If.True(A.IsNegative, () => A.Xor(0xFF).Add(1));
 			return A;
 		}
 		public static RegisterA Abs(IOperand o) {
-			If(A.Set(o).IsNegative(), () => {
-				A.Xor(0xFF).Add(1);
-			});
+			If.True(A.Set(o).IsNegative, () => A.Xor(0xFF).Add(1));
 			return A;
 		}
 	}

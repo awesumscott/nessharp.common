@@ -10,16 +10,8 @@ namespace NESSharp.Common {
 		public static void Update() {
 			NES.PPU.ScrollTo(NES.PPU.LazyScrollX, NES.PPU.LazyScrollY);
 		}
-		private static void _xAddCorrect() {
-			If(() => Carry.IsSet(), () => {
-				NES.PPU.LazyControl.Set(z => z.Xor(0b01));
-			});
-		}
-		private static void _xSubtractCorrect() {
-			If(() => Carry.IsClear(), () => {
-				NES.PPU.LazyControl.Set(z => z.Xor(0b01));
-			});
-		}
+		private static void _xAddCorrect() =>		If.True(Carry.IsSet,	() => NES.PPU.LazyControl.Set(z => z.Xor(0b01)));
+		private static void _xSubtractCorrect() =>	If.True(Carry.IsClear,	() => NES.PPU.LazyControl.Set(z => z.Xor(0b01)));
 		private static void _yAddCorrect() {
 			//A.Set(239); //TODO: replace after implementing GreaterThan
 			//CPU6502.CMP(NES.PPU.LazyScrollY); //Y >= 240?
@@ -29,13 +21,13 @@ namespace NESSharp.Common {
 			//	NES.PPU.LazyControl.Set(z => z.Xor(0b10));
 			//});
 
-			If(() => NES.PPU.LazyScrollY.GreaterThanOrEqualTo(240), () => {
+			If.True(() => NES.PPU.LazyScrollY.GreaterThanOrEqualTo(240), () => {
 				NES.PPU.LazyScrollY.Set(z => z.Add(16));
 				NES.PPU.LazyControl.Set(z => z.Xor(0b10));
 			});
 		}
 		private static void _ySubtractCorrect() {
-			If(() => Carry.IsClear(), () => {
+			If.True(() => Carry.IsClear(), () => {
 				NES.PPU.LazyScrollY.Set(z => z.Subtract(16));
 				NES.PPU.LazyControl.Set(z => z.Xor(0b10));
 			});

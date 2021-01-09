@@ -41,7 +41,7 @@ namespace NESSharp.Common.Mapper30 {
 		
 		[CodeSection]
 		private static void _WriteVerify() {
-			Loop.Do(_ => {
+			Loop.Do_old(_ => {
 				A.Set(TargetAddress[Y]).CMP(TargetAddress[Y]);
 			}).While(() => A.NotEquals(0));
 			Return();
@@ -122,7 +122,7 @@ namespace NESSharp.Common.Mapper30 {
 		public static void Init() {
 			//Copy funcs to those RAM chunks
 			Y.Set(0);
-			Loop.Do(_ => {
+			Loop.Do_old(_ => {
 				AddrWriteVerify[Y].Set(A.Set(LabelFor(_WriteVerify)[Y]));
 				Y++;
 				CPU6502.CPY(_lenTotalRamLength);

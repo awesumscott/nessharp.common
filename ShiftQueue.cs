@@ -21,10 +21,10 @@ namespace NESSharp.Common {
 		public void Push(VByte v) {
 			X.Set(0);
 			Loop.AscendWhile(X, () => X.NotEquals((U8)Values.Length), loop => {
-				If(() => Values[X].Equals(_clearVal), () => {
+				If.True(() => Values[X].Equals(_clearVal), () => {
 					Comment("Add action to the end of the queue");
 					Values[X].Set(v);
-					GoTo(loop.Break);
+					loop.Break();
 				});
 			});
 		}
