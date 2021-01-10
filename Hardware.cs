@@ -33,7 +33,7 @@ namespace NESSharp.Common {
 		}
 
 		
-		public static void GetTVSystem(VByte nmis) {
+		public static RegisterA GetTVSystem(VByte nmis) {
 			X.Set(0);
 			Y.Set(0);
 			A.Set(nmis);
@@ -53,6 +53,14 @@ namespace NESSharp.Common {
 
 			A.Set(Y).Subtract(10).Equals(3);
 			If.True(Carry.IsSet, () => A.Set(3));
+			return A;
+		}
+
+		public static class TV {
+			public static readonly U8 NTSC		= 0;
+			public static readonly U8 PAL		= 1;
+			public static readonly U8 Dendy		= 2;
+			public static readonly U8 Unknown	= 3;
 		}
 	}
 }

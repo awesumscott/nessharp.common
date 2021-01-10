@@ -86,7 +86,7 @@ namespace NESSharp.Common.Mapper30 {
 		public static VByte Bank;
 
 		static BankSwitching() {
-			Bank = VByte.New(GlobalZp, "bank_current");
+			Bank = VByte.New(NES.zp, "bank_current");
 		}
 
 		[Dependencies]

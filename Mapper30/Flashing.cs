@@ -4,15 +4,15 @@ using static NESSharp.Core.AL;
 namespace NESSharp.Common.Mapper30 {
 	public static class Flashing {
 		//These variables need to be located in the Zero Page, due to the need for Indirect addressing.
-		private static VByte TargetBank		= VByte.New(GlobalZp, "Flashing_TargetBank");
-		private static Ptr TargetAddress	= Ptr.New(GlobalZp, "Flashing_TargetAddress");
-		private static VByte SourceAddress	= VByte.New(GlobalZp, "Flashing_SourceAddress");
-		private static VByte ReturnBank		= VByte.New(GlobalZp, "Flashing_ReturnBank");
-		private static Address FlashRamPage	= Addr(0x0700);
-		private static Address AddrWriteVerify	= Addr(0x0);
-		private static Address AddrEraseSector	= Addr(0x0);
-		private static Address AddrWriteByte	= Addr(0x0);
-		private static Address AddrSoftwareIdentify	= Addr(0x0);
+		private static VByte TargetBank		= VByte.New(NES.zp, "Flashing_TargetBank");
+		private static Ptr TargetAddress	= Ptr.New(NES.zp, "Flashing_TargetAddress");
+		private static VByte SourceAddress	= VByte.New(NES.zp, "Flashing_SourceAddress");
+		private static VByte ReturnBank		= VByte.New(NES.zp, "Flashing_ReturnBank");
+		private static Address FlashRamPage		= 0x0700;
+		private static Address AddrWriteVerify	= 0x0;
+		private static Address AddrEraseSector	= 0x0;
+		private static Address AddrWriteByte	= 0x0;
+		private static Address AddrSoftwareIdentify	= 0x0;
 
 		private static readonly Bus writeAddr0 = new Bus(0xC000);
 		private static readonly Bus writeAddr1 = new Bus(0x9555);
@@ -21,28 +21,29 @@ namespace NESSharp.Common.Mapper30 {
 
 		static Flashing() {
 			//Determine RAM func lengths
-			var lenWriteVerify =		(U8)Length(_WriteVerify);
-			var lenEraseSector =		(U8)Length(_EraseSector);
-			var lenWriteByte =			(U8)Length(_WriteByte);
-			var lenSoftwareIdentify =	(U8)Length(_SoftwareIdentify);
+			var lenWriteVerify =		Length(_WriteVerify);
+			var lenEraseSector =		Length(_EraseSector);
+			var lenWriteByte =			Length(_WriteByte);
+			var lenSoftwareIdentify =	Length(_SoftwareIdentify);
 			//Reserve chunks in RAM
-			var ramWriteVerify =		GlobalRam.Dim(lenWriteVerify);
-			var ramEraseSector =		GlobalRam.Dim(lenEraseSector);
-			var ramWriteByte =			GlobalRam.Dim(lenWriteByte);
-			var ramSoftwareIdentify =	GlobalRam.Dim(lenSoftwareIdentify);
+			var ramWriteVerify =		NES.ram.Dim(lenWriteVerify);
+			var ramEraseSector =		NES.ram.Dim(lenEraseSector);
+			var ramWriteByte =			NES.ram.Dim(lenWriteByte);
+			var ramSoftwareIdentify =	NES.ram.Dim(lenSoftwareIdentify);
 			//Save starting addresses for invoking them with GoSub
 			AddrWriteVerify =			ramWriteVerify[0];
 			AddrEraseSector =			ramEraseSector[0];
 			AddrWriteByte =				ramWriteByte[0];
 			AddrSoftwareIdentify =		ramSoftwareIdentify[0];
 			//Total length
-			_lenTotalRamLength = (U8)(lenWriteVerify + lenEraseSector + lenWriteByte + lenSoftwareIdentify);
+			_lenTotalRamLength = lenWriteVerify + lenEraseSector + lenWriteByte + lenSoftwareIdentify;
 		}
 		
 		[CodeSection]
 		private static void _WriteVerify() {
 			Loop.Do_old(_ => {
 				A.Set(TargetAddress[Y]).CMP(TargetAddress[Y]);
+				//TODO: verify, there should probably be some Y inc/dec in here
 			}).While(() => A.NotEquals(0));
 			Return();
 			

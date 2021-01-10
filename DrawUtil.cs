@@ -23,9 +23,9 @@ namespace NESSharp.Common {
 		}
 	}
 	public class Font {
-		private U8 _offset;
-		private U8 _space;
-		private string _chars;
+		private readonly U8 _offset;
+		private readonly U8 _space;
+		private readonly string _chars;
 		public Font(U8 offset, string chars, int space = 0) {
 			_offset = offset;
 			_space = (U8)space;
