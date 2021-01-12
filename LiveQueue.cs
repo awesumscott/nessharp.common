@@ -13,7 +13,7 @@ namespace NESSharp.Common {
 		public LiveQueue() {}
 
 		//TODO: this doesn't really enforce length. Implement wrap if length != 0 (0 would indicate 256--full page)
-		public static LiveQueue New(RAM Zp, RAM Ram, RAM valuesRam, U8 length, string name, U8 stopVal) {
+		public static LiveQueue New(RAM Zp, RAM Ram, RAM valuesRam, int length, string name, U8 stopVal) {
 			var bq = new LiveQueue();
 			bq.Values	= Array<VByte>.New(length, valuesRam, name + "_values");
 			bq._stopVal = stopVal;
