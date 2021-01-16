@@ -5,7 +5,7 @@ namespace NESSharp.Common {
 	public class ShiftQueue {
 		public Array<VByte> Values; //queue for input to lazy-execute slide actions
 		private U8 _clearVal = 0;
-		public static ShiftQueue New(RAM ram, U8 length, string name, U8 clearValue) {
+		public static ShiftQueue New(RAMRange ram, U8 length, string name, U8 clearValue) {
 			var bq = new ShiftQueue();
 			bq.Values	= Array<VByte>.New(length, ram, name + "_values");
 			bq._clearVal = clearValue;

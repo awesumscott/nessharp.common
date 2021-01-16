@@ -38,7 +38,7 @@ namespace NESSharp.Common {
 		private VByte _temp;
 		private bool _twoHigh = false, _twoWide = false;
 		private bool _xAsc, _yAsc;
-		public ShadowAttributeTable_v3_WIP(RAM r, NameTable nts) {
+		public ShadowAttributeTable_v3_WIP(RAMRange r, NameTable nts) {
 			var ntCount = 0;
 			var nt0 = nts.HasFlag(NameTable.NT0);
 			var nt1 = nts.HasFlag(NameTable.NT1);

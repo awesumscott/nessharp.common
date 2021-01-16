@@ -9,7 +9,7 @@ namespace NESSharp.Common {
 		public VByte Max; //Array length of current level (_width * _height)
 		public VByte Index; //Used as a cursor for grid cell access via Y
 
-		public static ByteGrid New(RAM ram, U8 length, string name) {
+		public static ByteGrid New(RAMRange ram, U8 length, string name) {
 			var grid = new ByteGrid();
 			grid.Values			= Array<VByte>.New(length, ram, name + "_grid");
 			grid.Width			= VByte.New(ram, name + "_width");

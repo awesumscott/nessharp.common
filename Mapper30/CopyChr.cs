@@ -32,7 +32,8 @@ namespace NESSharp.Common.Mapper30 {
 					Y++;
 					//TODO: more here
 				}).While(() => Y.NotEquals(0));
-				GraphicsPtr.Address[1]++;
+				//GraphicsPtr.Address[1]++;
+				GraphicsPtr.Hi.Increment();
 				X--;
 				//TODO: more here
 			}).While(() => X.NotEquals(0));
