@@ -21,14 +21,16 @@ namespace NESSharp.Common {
 
 		public static void ClearRAM() {
 			Loop.Repeat(X.Set(0), 256, _ => {
-				Addr(0x0000)[X].Set(0);
-				Addr(0x0100)[X].Set(0);
-				Addr(0x0300)[X].Set(0);
-				Addr(0x0400)[X].Set(0);
-				Addr(0x0500)[X].Set(0);
-				Addr(0x0600)[X].Set(0);
-				Addr(0x0700)[X].Set(0);
-				Addr(0x0200)[X].Set(0xFE);
+				CPU6502.LDA((U8)0);
+				CPU6502.STA(Addr(0x0000)[X]);
+				CPU6502.STA(Addr(0x0100)[X]);
+				CPU6502.STA(Addr(0x0300)[X]);
+				CPU6502.STA(Addr(0x0400)[X]);
+				CPU6502.STA(Addr(0x0500)[X]);
+				CPU6502.STA(Addr(0x0600)[X]);
+				CPU6502.STA(Addr(0x0700)[X]);
+				CPU6502.LDA((U8)0xFE);
+				CPU6502.STA(Addr(0x0200)[X]);
 			});
 		}
 

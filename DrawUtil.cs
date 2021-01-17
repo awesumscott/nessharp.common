@@ -67,6 +67,7 @@ namespace NESSharp.Common {
 			}
 			return string.Join(null, lineList).ToArray().Select(x => (byte)x).ToArray();
 		}
+		[Obsolete("Use a module from NESSharp.Lib.Compression")]
 		public static byte[] RLECompress(params byte[] input) {
 			byte compressionIndicator = 255;
 			byte cur;
@@ -127,6 +128,7 @@ namespace NESSharp.Common {
 		/// Inline function to use in a decompressing sub
 		/// </summary>
 		/// <param name="action"></param>
+		[Obsolete("Use a module from NESSharp.Lib.Compression")]
 		public static void RLEDecompress(/*Action dataAction,*/ VByte temp, Action<RegisterA> block) {
 			//var lbl = LabelFor(dataAction);
 			//TempPtr0.PointTo(lbl);

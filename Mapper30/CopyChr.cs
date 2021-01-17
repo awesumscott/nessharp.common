@@ -20,7 +20,7 @@ namespace NESSharp.Common.Mapper30 {
 		public static void ChrCopy() {
 			Comment("Copy a chunk to CHR (<=255 bytes)");
 
-			NES.PPU.Address.Set(Y).Set((U8)0); //Hi then Lo
+			NES.PPU.Address.Write(Y, (U8)0); //Hi then Lo
 			Y.Set(0); //starting index into the first page
 
 			//Ptr p = Globals.graphicsPtr;
@@ -28,7 +28,7 @@ namespace NESSharp.Common.Mapper30 {
 
 			Loop.Do_old(_ => {
 				Loop.Do_old(_ => {
-					NES.PPU.Data.Set(GraphicsPtr[Y]);
+					NES.PPU.Data.Write(GraphicsPtr[Y]);
 					Y++;
 					//TODO: more here
 				}).While(() => Y.NotEquals(0));
