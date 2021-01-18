@@ -74,8 +74,8 @@ namespace NESSharp.Common {
 				Temp[0].Set(_lo[reg]);
 				Temp[1].Set(_hi[reg]);
 				
-				//TODO: fix these up: VWord needs a Ref() func, and all need versions that can accept VByte lists
-				return VWord.Ref(Temp[0], 2);
+				//TODO: fix these up: all Ref functions need versions that can accept VByte lists
+				return VWord.Ref(Temp[0], 2, Temp[0].Name);
 			}
 		}
 		public Label this[U8 index] {
