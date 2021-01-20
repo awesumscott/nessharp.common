@@ -20,7 +20,7 @@ namespace NESSharp.Common {
 
 		public void Push(VByte v) {
 			X.Set(0);
-			Loop.AscendWhile(X, () => X.NotEquals((U8)Values.Length), loop => {
+			Loop.AscendWhile(X, () => X.NotEquals(Values.Length), loop => {
 				If.True(() => Values[X].Equals(_clearVal), () => {
 					Comment("Add action to the end of the queue");
 					Values[X].Set(v);
@@ -40,14 +40,14 @@ namespace NESSharp.Common {
 			Loop.AscendWhile(X, () => X.NotEquals((U8)(Values.Length - 1)), _ => {
 				//Get next value
 				X.State.Unsafe(() => { //indicate X modification needs careful attention
-					X++;
+					X.Inc();
 					A.Set(Values[X]); //Store in current location
-					X--;
+					X.Dec();
 				});
 				Values[X].Set(A);
 			});
 			Comment("Last command is empty");
-			Values[X.Set((U8)(Values.Length - 1))].Set(_clearVal);
+			Values[X.Set(Values.Length - 1)].Set(_clearVal);
 		}
 	}
 }

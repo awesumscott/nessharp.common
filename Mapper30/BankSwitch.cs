@@ -34,13 +34,13 @@ namespace NESSharp.Common.Mapper30 {
 			_list.Add(bs);
 		}
 		public void Write() {
-			Use(BankLabel);
+			BankLabel.Write();
 			//Raw(this.Select(x => (byte)x.Value.Bank).ToArray()); //Dictionary<object, BankedSubroutine> version
 			//Raw(this.Cast<System.Collections.DictionaryEntry>().Select(x => (byte)((BankedSubroutine)x.Value).Bank).ToArray()); //OrderedDictionary version
 			Raw(_list.Select(x => (byte)x.Bank).ToArray()); //List<BankedSubroutine> version
-			Use(SubLoLabel);
+			SubLoLabel.Write();
 			Raw(_list.Select(x => LabelFor(x.Method).Offset(-1).Lo()).ToArray());
-			Use(SubHiLabel);
+			SubHiLabel.Write();
 			Raw(_list.Select(x => LabelFor(x.Method).Offset(-1).Hi()).ToArray());
 		}
 		public U8 IndexOf(object name) => (U8)_list.IndexOf(_list.Where(x => x.Key.ToString() == name.ToString()).First());
@@ -116,7 +116,7 @@ namespace NESSharp.Common.Mapper30 {
 			//});
 			Y.Set(A);
 			Bank.Set(Y);
-			Use(Labels["BankSwitchNoSave"]);
+			Labels["BankSwitchNoSave"].Write();
 			LabelFor(_BankTable)[Y].Set(LabelFor(_BankTable)[Y]);
 		}
 

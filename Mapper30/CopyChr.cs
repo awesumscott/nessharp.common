@@ -29,12 +29,12 @@ namespace NESSharp.Common.Mapper30 {
 			Loop.Do_old(_ => {
 				Loop.Do_old(_ => {
 					NES.PPU.Data.Write(GraphicsPtr[Y]);
-					Y++;
+					Y.Increment();
 					//TODO: more here
 				}).While(() => Y.NotEquals(0));
 				//GraphicsPtr.Address[1]++;
-				GraphicsPtr.Hi.Increment();
-				X--;
+				GraphicsPtr.Hi.Inc();
+				X.Dec();
 				//TODO: more here
 			}).While(() => X.NotEquals(0));
 		}

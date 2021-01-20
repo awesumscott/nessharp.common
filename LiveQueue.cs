@@ -34,7 +34,7 @@ namespace NESSharp.Common {
 			if (indexReg is RegisterX)		X.Set(WriteIndex);
 			else if (indexReg is RegisterY)	Y.Set(WriteIndex);
 			Values[indexReg].Set(u8);
-			indexReg++;
+			indexReg.Inc();
 			Values[indexReg].Set(_stopVal);
 			WriteIndex.Set(indexReg);
 		}
@@ -42,19 +42,19 @@ namespace NESSharp.Common {
 			if (!_isWriting)
 				throw new Exception("Push can only be used within a LiveQueue.Write() block");
 			Values[_indexReg].Set(u8);
-			_indexReg++;
+			_indexReg.Inc();
 		}
 		public void Push(Address addr) {
 			if (!_isWriting)
 				throw new Exception("Push can only be used within a LiveQueue.Write() block");
 			Values[_indexReg].Set(addr);
-			_indexReg++;
+			_indexReg.Inc();
 		}
 		public void Push(RegisterA a) {
 			if (!_isWriting)
 				throw new Exception("Push can only be used within a LiveQueue.Write() block");
 			Values[_indexReg].Set(a);
-			_indexReg++;
+			_indexReg.Inc();
 		}
 
 		//TODO: handle either index in _indexReg
@@ -65,7 +65,7 @@ namespace NESSharp.Common {
 			TempPtr0.PointTo(LabelFor(action));
 			Loop.AscendWhile(Y.Set(0), () => Y.NotEquals((U8)len), _ => {
 				Values[X].Set(TempPtr0[Y]);
-				X++;
+				X.Inc();
 			});
 			Values[X].Set(_stopVal);
 			WriteIndex.Set(X);
@@ -98,9 +98,9 @@ namespace NESSharp.Common {
 		public void Pop() {
 			if (!_isReading)
 				throw new Exception("Pop can only be used within a LiveQueue.Read() block");
-			_indexReg++;
+			_indexReg.Inc();
 		}
-		public void Unsafe_Pop(IndexingRegister indexReg) => indexReg++;
+		public void Unsafe_Pop(IndexingRegister indexReg) => indexReg.Inc();
 
 		public void Write(IndexingRegister indexReg, Action block) {
 			if (_isReading || _isWriting)

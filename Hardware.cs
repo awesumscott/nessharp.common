@@ -15,7 +15,7 @@ namespace NESSharp.Common {
 				WaitForVBlank();
 			NES.PPU.SetAddress(NES.MemoryMap.Palette);
 			Loop.Repeat(X.Set(0), 32, _ => {
-				NES.PPU.Data.Set(LabelFor(paletteDataSection)[X]);
+				NES.PPU.Data.Write(LabelFor(paletteDataSection)[X]);
 			});
 		}
 
@@ -49,12 +49,11 @@ namespace NESSharp.Common {
 				//Dendy:	35464 cycles or 3224 = $C98 iterations
 				//so we can divide by $100 (rounding down), subtract ten,
 				//and end up with 0=ntsc, 1=pal, 2=dendy, 3=unknown
-				X++;
-				If.True(() => X.Equals(0), () => Y++);
+				X.Inc();
+				If.True(() => X.Equals(0), () => Y.Increment());
 			}).While(() => A.Equals(nmis));
 
-			A.Set(Y).Subtract(10).Equals(3);
-			If.True(Carry.IsSet, () => A.Set(3));
+			If.True(() => A.Set(Y).Subtract(10).GreaterThanOrEqualTo(3), () => A.Set(3));
 			return A;
 		}
 

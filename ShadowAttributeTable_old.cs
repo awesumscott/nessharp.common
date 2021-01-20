@@ -137,7 +137,7 @@ namespace NESSharp.Common {
 			NES.PPU.SetHorizontalWrite();
 			NES.PPU.SetAddress(0x23C0);
 			Loop.AscendWhile(X.Set(0), () => X.NotEquals((U8)Table.Length), _ => {
-				NES.PPU.Data.Set(Table[X]);
+				NES.PPU.Data.Write(Table[X]);
 			});
 		}
 
@@ -185,7 +185,7 @@ namespace NESSharp.Common {
 			NES.PPU.SetHorizontalWrite();
 			NES.PPU.SetAddress(0x23C0);
 			Loop.AscendWhile(X.Set(0), () => X.NotEquals((U8)Table.Length), _ => {
-				NES.PPU.Data.Set(Table[X]);
+				NES.PPU.Data.Write(Table[X]);
 			});
 		}
 	}

@@ -22,23 +22,23 @@ namespace NESSharp.Common {
 		}
 		public U8 Length => (U8)_labels.Length;
 		public void WriteList() {
-			Use(_lo);
+			_lo.Write();
 			Raw(_labels.Select(x => x.Lo()).ToArray());
 			
-			Use(_hi);
+			_hi.Write();
 			Raw(_labels.Select(x => x.Hi()).ToArray());
 		}
 		public void WriteStackJumpList() {
-			Use(_lo);
+			_lo.Write();
 			Raw(_labels.Select(x => x.Offset(-1).Lo()).ToArray());
 			
-			Use(_hi);
+			_hi.Write();
 			Raw(_labels.Select(x => x.Offset(-1).Hi()).ToArray());
 
 
 			//Write the helper function for stack jumps
 			_stackJumpHelperFunc = Labels.New();
-			Use(_stackJumpHelperFunc);
+			_stackJumpHelperFunc.Write();
 			A.Set(_hi[X]);
 			Stack.Backup(Register.A);
 			A.Set(_lo[X]);
