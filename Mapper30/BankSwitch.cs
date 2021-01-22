@@ -37,7 +37,7 @@ namespace NESSharp.Common.Mapper30 {
 			BankLabel.Write();
 			//Raw(this.Select(x => (byte)x.Value.Bank).ToArray()); //Dictionary<object, BankedSubroutine> version
 			//Raw(this.Cast<System.Collections.DictionaryEntry>().Select(x => (byte)((BankedSubroutine)x.Value).Bank).ToArray()); //OrderedDictionary version
-			Raw(_list.Select(x => (byte)x.Bank).ToArray()); //List<BankedSubroutine> version
+			Raw(_list.Select(x => x.Bank).ToArray()); //List<BankedSubroutine> version
 			SubLoLabel.Write();
 			Raw(_list.Select(x => LabelFor(x.Method).Offset(-1).Lo()).ToArray());
 			SubHiLabel.Write();
@@ -123,7 +123,7 @@ namespace NESSharp.Common.Mapper30 {
 		[DataSection]
 		private static void _BankTable() {
 			//bits 6-5 used for CHR-RAM bankswitching
-			var bankIds = new byte[128]; //32-1 to skip the fixed bank
+			var bankIds = new U8[128]; //32-1 to skip the fixed bank
 			for (byte i = 0; i < 128; i++)
 				bankIds[i] = i;
 			Raw(bankIds);

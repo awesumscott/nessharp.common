@@ -21,7 +21,7 @@ namespace NESSharp.Common {
 
 		public static void ClearRAM() {
 			Loop.Repeat(X.Set(0), 256, _ => {
-				CPU6502.LDA((U8)0);
+				A.Set(0);
 				CPU6502.STA(Addr(0x0000)[X]);
 				CPU6502.STA(Addr(0x0100)[X]);
 				CPU6502.STA(Addr(0x0300)[X]);
@@ -29,7 +29,7 @@ namespace NESSharp.Common {
 				CPU6502.STA(Addr(0x0500)[X]);
 				CPU6502.STA(Addr(0x0600)[X]);
 				CPU6502.STA(Addr(0x0700)[X]);
-				CPU6502.LDA((U8)0xFE);
+				A.Set(0xFE);
 				CPU6502.STA(Addr(0x0200)[X]);
 			});
 		}

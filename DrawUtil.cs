@@ -35,7 +35,7 @@ namespace NESSharp.Common {
 		public string EncodeString(string text) => string.Join(null, text.ToUpperInvariant().Select(x => (char)(_chars.Contains(x) ? _chars.IndexOf(x) + _offset : (x == ' ' ? (char)_space : x))));
 	}
 	public static class DrawUtil {
-		public static byte[] GenerateTextBox(Font font, BorderDefinition border, params string[] lines) {
+		public static U8[] GenerateTextBox(Font font, BorderDefinition border, params string[] lines) {
 			var screenWidth = 32;
 			var lineList = new List<string>();
 			var maxLen = 0;
@@ -52,9 +52,9 @@ namespace NESSharp.Common {
 			lineList.Add($"{(char)(byte)border.BottomLeft}{string.Empty.PadRight(maxLen + 2, (char)(byte)border.Bottom)}{(char)(byte)border.BottomRight}"); //lower border
 
 			lineList = lineList.Select(x => font.EncodeString(x.PadLeft(screenWidth - rightMargin, ' ').PadRight(screenWidth, ' '))).ToList();
-			return string.Join(null, lineList).ToArray().Select(x => (byte)x).ToArray();
+			return string.Join(null, lineList).Select(x => (U8)(byte)x).ToArray();
 		}
-		public static byte[] GenerateCenteredText(Font font, params string[] lines) {
+		public static U8[] GenerateCenteredText(Font font, params string[] lines) {
 			var screenWidth = 32;
 			var lineList = new List<string>();
 			foreach(var line in lines) {
@@ -65,27 +65,27 @@ namespace NESSharp.Common {
 				var rightMargin = remainingWidth - leftMargin;
 				lineList.Add(font.EncodeString(line.PadLeft(screenWidth - rightMargin, ' ').PadRight(screenWidth, ' ')));
 			}
-			return string.Join(null, lineList).ToArray().Select(x => (byte)x).ToArray();
+			return string.Join(null, lineList).Select(x => (U8)(byte)x).ToArray();
 		}
 		[Obsolete("Use a module from NESSharp.Lib.Compression")]
-		public static byte[] RLECompress(params byte[] input) {
+		public static U8[] RLECompress(params U8[] input) {
 			byte compressionIndicator = 255;
 			byte cur;
 			byte? next;
 			var len = input.Length;
-			var output = new List<byte>();
+			var output = new List<U8>();
 
 			void compress(int runLength, byte chr) {
 				if (runLength <= 255) {
 					output.Add(compressionIndicator);
-					output.Add((byte)runLength);
+					output.Add(runLength);
 					output.Add(chr);
 				} else throw new NotImplementedException(); //TODO: support >255 run lengths
 			}
 
 			for (var i = 0; i < len; i++) {
 				cur = input[i];
-				next = i + 1 >= len ? (byte?)null : input[i + 1];
+				next = i + 1 >= len ? (U8?)null : input[i + 1];
 				if (cur != next && cur != compressionIndicator) {
 					output.Add(cur);
 					continue;
@@ -119,7 +119,7 @@ namespace NESSharp.Common {
 			}
 			var count = output.Count;
 			if (count > 255) throw new NotImplementedException();
-			output.Insert(0, (byte)(count + 1)); //max offset from starting value in this data set
+			output.Insert(0, count + 1); //max offset from starting value in this data set
 
 			return output.ToArray();
 		}
