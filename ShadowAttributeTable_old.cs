@@ -1,5 +1,6 @@
 ﻿using NESSharp.Core;
 using System;
+using static NESSharp.Common.ShadowAttributeTable_v2;
 using static NESSharp.Core.AL;
 
 namespace NESSharp.Common {
@@ -159,6 +160,15 @@ namespace NESSharp.Common {
 				AttributeMaskID.BottomRight
 			);
 		}
+		[DataSection]
+		public void Palettes() {
+			Raw(
+				AttributeMaskID.Palette0,
+				AttributeMaskID.Palette1,
+				AttributeMaskID.Palette2,
+				AttributeMaskID.Palette3
+			);
+		}
 	}
 
 	public class ShadowAttributeTable_v1 : Module {
@@ -184,9 +194,61 @@ namespace NESSharp.Common {
 		public void UpdateAttributeTableImmediately() {
 			NES.PPU.SetHorizontalWrite();
 			NES.PPU.SetAddress(0x23C0);
-			Loop.AscendWhile(X.Set(0), () => X.NotEquals((U8)Table.Length), _ => {
+			Loop.AscendWhile(X.Set(0), () => X.NotEquals(Table.Length), _ => {
 				NES.PPU.Data.Write(Table[X]);
 			});
+		}
+
+		public VByte UpdateSingleTile(Func<IOperand> x, Func<IOperand> y, Func<IOperand> color, VByte temp) {
+			CPU6502.CLD();CPU6502.CLD();CPU6502.CLD();CPU6502.CLD();CPU6502.CLD();
+			temp.Set(A.Set(x()).Divide(32));
+			temp.Set(z => A.Set(y()).Divide(4).And(0b00111000).Or(z));
+			Stack.Preserve(A, () => {	//preserve attr index, wait to put into X, because X is needed as an index to X() and Y() values
+				Comment("temp = attr tile mask index");
+				temp.Set(A.Set(x()).Divide(16).And(1));
+				temp.Set(z => A.Set(y()).Divide(8).And(0b10).Or(z));
+			});
+			X.Set(A);	//X = attr index
+			A.Set(LabelFor(Palettes)[Y.Set(color())]).And(LabelFor(AttributeBit)[Y.Set(temp)]);
+			Stack.Preserve(A, () => {	//preserve tile color
+				Table[X].Set(z => z.And(LabelFor(AttributeBitMask)[Y]));	//clear current tile palette
+			});
+			Table[X].Set(z => A.Or(z));
+			//Table[X].Set(0);
+
+			return temp.Set(X);
+		}
+		public void UpdateSingleTile(IndexingRegister reg, Func<IOperand> cell, Func<IOperand> color) {
+			if (reg is RegisterX)	X.Set(cell());
+			else					Y.Set(cell());
+			Table[reg].Set(color());
+		}
+		[DataSection]
+		public void AttributeBitMask() {
+			Raw(
+				AttributeMaskID.TopLeftMask,
+				AttributeMaskID.TopRightMask,
+				AttributeMaskID.BottomLeftMask,
+				AttributeMaskID.BottomRightMask
+			);
+		}
+		[DataSection]
+		public void AttributeBit() {
+			Raw(
+				AttributeMaskID.TopLeft,
+				AttributeMaskID.TopRight,
+				AttributeMaskID.BottomLeft,
+				AttributeMaskID.BottomRight
+			);
+		}
+		[DataSection]
+		public void Palettes() {
+			Raw(
+				AttributeMaskID.Palette0,
+				AttributeMaskID.Palette1,
+				AttributeMaskID.Palette2,
+				AttributeMaskID.Palette3
+			);
 		}
 	}
 }
