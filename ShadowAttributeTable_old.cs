@@ -62,7 +62,7 @@ namespace NESSharp.Common {
 		public void Clear(NameTable nts) {
 			//TODO: single or multiple, in the correct index range
 			Comment("Clear attribute table");
-			Loop.Descend_Pre(X.Set(Table.Length), _ => {
+			Loop.Descend_PostCondition_PreDec(X.Set(Table.Length), _ => {
 				Table[X].Set(0);
 			});
 		}
@@ -128,7 +128,7 @@ namespace NESSharp.Common {
 
 		public void Clear() {
 			Comment("Clear attribute table");
-			Loop.Descend_Pre(X.Set(Table.Length), _ => {
+			Loop.Descend_PostCondition_PreDec(X.Set(Table.Length), _ => {
 				Table[X].Set(0);
 			});
 		}
@@ -137,7 +137,7 @@ namespace NESSharp.Common {
 		public void UpdateAttributeTableImmediately() {
 			NES.PPU.SetHorizontalWrite();
 			NES.PPU.SetAddress(0x23C0);
-			Loop.AscendWhile(X.Set(0), () => X.NotEquals((U8)Table.Length), _ => {
+			Loop.While_PostCondition_PostInc(X.Set(0), () => X.NotEquals((U8)Table.Length), _ => {
 				NES.PPU.Data.Write(Table[X]);
 			});
 		}
@@ -185,7 +185,7 @@ namespace NESSharp.Common {
 
 		public void Clear() {
 			Comment("Clear attribute table");
-			Loop.Descend_Pre(X.Set(Table.Length), _ => {
+			Loop.Descend_PostCondition_PreDec(X.Set(Table.Length), _ => {
 				Table[X].Set(0);
 			});
 		}
@@ -194,13 +194,12 @@ namespace NESSharp.Common {
 		public void UpdateAttributeTableImmediately() {
 			NES.PPU.SetHorizontalWrite();
 			NES.PPU.SetAddress(0x23C0);
-			Loop.AscendWhile(X.Set(0), () => X.NotEquals(Table.Length), _ => {
+			Loop.While_PostCondition_PostInc(X.Set(0), () => X.NotEquals(Table.Length), _ => {
 				NES.PPU.Data.Write(Table[X]);
 			});
 		}
 
 		public VByte UpdateSingleTile(Func<IOperand> x, Func<IOperand> y, Func<IOperand> color, VByte temp) {
-			CPU6502.CLD();CPU6502.CLD();CPU6502.CLD();CPU6502.CLD();CPU6502.CLD();
 			temp.Set(A.Set(x()).Divide(32));
 			temp.Set(z => A.Set(y()).Divide(4).And(0b00111000).Or(z));
 			Stack.Preserve(A, () => {	//preserve attr index, wait to put into X, because X is needed as an index to X() and Y() values
@@ -214,15 +213,10 @@ namespace NESSharp.Common {
 				Table[X].Set(z => z.And(LabelFor(AttributeBitMask)[Y]));	//clear current tile palette
 			});
 			Table[X].Set(z => A.Or(z));
-			//Table[X].Set(0);
 
 			return temp.Set(X);
 		}
-		public void UpdateSingleTile(IndexingRegister reg, Func<IOperand> cell, Func<IOperand> color) {
-			if (reg is RegisterX)	X.Set(cell());
-			else					Y.Set(cell());
-			Table[reg].Set(color());
-		}
+		public void UpdateSingleTile(IndexingRegister reg, Func<IOperand> cell, Func<IOperand> color) => Table[reg.Set(cell())].Set(color());
 		[DataSection]
 		public void AttributeBitMask() {
 			Raw(

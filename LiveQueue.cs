@@ -31,8 +31,7 @@ namespace NESSharp.Common {
 			Values[0].Set(_stopVal);
 		}
 		public void PushOnce(IndexingRegister indexReg, U8 u8) {
-			if (indexReg is RegisterX)		X.Set(WriteIndex);
-			else if (indexReg is RegisterY)	Y.Set(WriteIndex);
+			indexReg.Set(WriteIndex);
 			Values[indexReg].Set(u8);
 			indexReg.Inc();
 			Values[indexReg].Set(_stopVal);
@@ -63,7 +62,7 @@ namespace NESSharp.Common {
 			if (len > 255) throw new Exception("Block is too big, it must be 255 bytes or less.");
 			X.Set(WriteIndex);
 			TempPtr0.PointTo(LabelFor(action));
-			Loop.AscendWhile(Y.Set(0), () => Y.NotEquals((U8)len), _ => {
+			Loop.While_PostCondition_PostInc(Y.Set(0), () => Y.NotEquals((U8)len), _ => {
 				Values[X].Set(TempPtr0[Y]);
 				X.Inc();
 			});
@@ -74,11 +73,7 @@ namespace NESSharp.Common {
 		public void PushStart(IndexingRegister indexReg) {
 			_indexReg = indexReg;
 			_isWriting = true;
-			if (_indexReg is RegisterX) {
-				X.Set(WriteIndex);
-			} else if (_indexReg is RegisterY) {
-				Y.Set(WriteIndex);
-			}
+			_indexReg.Set(WriteIndex);
 		}
 		public void PushDone() {
 			Values[_indexReg].Set(_stopVal);
@@ -107,8 +102,7 @@ namespace NESSharp.Common {
 				throw new Exception("Queue is already reading or writing");
 			_isWriting = true;
 			_indexReg = indexReg;
-			if (indexReg is RegisterX)		X.Set(WriteIndex);
-			else if (indexReg is RegisterY)	Y.Set(WriteIndex);
+			indexReg.Set(WriteIndex);
 			block.Invoke();
 			Values[indexReg].Set(_stopVal);
 			WriteIndex.Set(indexReg);
@@ -121,8 +115,7 @@ namespace NESSharp.Common {
 				throw new Exception("Queue is already reading or writing");
 			_isReading = true;
 			_indexReg = indexReg;
-			if (indexReg is RegisterX)		X.Set(ReadIndex);
-			else if (indexReg is RegisterY)	Y.Set(ReadIndex);
+			indexReg.Set(ReadIndex);
 			block.Invoke();
 			ReadIndex.Set(indexReg);
 			_indexReg = null;

@@ -134,14 +134,14 @@ namespace NESSharp.Common {
 			//TempPtr0.PointTo(lbl);
 			byte compressionIndicator = 255;
 			var length = temp.Set(TempPtr0[Y.Set(0)]);
-			Loop.AscendWhile(Y.Increment(), () => Y.LessThan(length), _ => {
+			Loop.While_PostCondition_PostInc(Y.Inc(), () => Y.LessThan(length), _ => {
 				If.Block(c => c
 					.True(() => A.Set(TempPtr0[Y]).Equals(compressionIndicator), () => {
 						Y.State.Unsafe(() => {
-							Y.Increment();
+							Y.Inc();
 							X.Set(A.Set(TempPtr0[Y]));
-							Y.Increment();
-							Loop.Descend_Post(X, _ => block(A.Set(TempPtr0[Y])));
+							Y.Inc();
+							Loop.Descend_PostCondition_PostDec(X, _ => block(A.Set(TempPtr0[Y])));
 						});
 					})
 					.Else(() => block(A.Set(TempPtr0[Y])))

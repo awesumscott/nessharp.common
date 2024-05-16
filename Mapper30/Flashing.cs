@@ -125,7 +125,7 @@ namespace NESSharp.Common.Mapper30 {
 			Y.Set(0);
 			Loop.Do_old(_ => {
 				AddrWriteVerify[Y].Set(A.Set(LabelFor(_WriteVerify)[Y]));
-				Y.Increment();
+				Y.Inc();
 				CPU6502.CPY(_lenTotalRamLength);
 			}).While(() => Y.NotEquals(0));
 		}

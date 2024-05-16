@@ -22,7 +22,7 @@ namespace NESSharp.Common {
 		}
 
 		public void Clear(U8 clearVal) {
-			Loop.Descend_Pre(X.Set(Values.Length), _ => {
+			Loop.Descend_PostCondition_PreDec(X.Set(Values.Length), _ => {
 				Values[X].Set(clearVal);
 			});
 		}
@@ -33,7 +33,7 @@ namespace NESSharp.Common {
 		public void UpdateMax() {
 			Comment("ByteGrid.Max = ByteGrid.Width * ByteGrid.Height");
 			Max.Set(0);
-			Loop.Descend_Post(X.Set(Height), _ => {
+			Loop.Descend_PostCondition_PostDec(X.Set(Height), _ => {
 				Max.Set(z => z.Add(Width));
 			});
 		}
@@ -41,7 +41,7 @@ namespace NESSharp.Common {
 			if (a == null)
 				Index.Set(z => z.Subtract(Width));
 			else
-				Loop.Descend_Post(X.Set(a), _ => {
+				Loop.Descend_PostCondition_PostDec(X.Set(a), _ => {
 					Index.Set(z => z.Subtract(Width));
 				});
 			return A;
@@ -50,7 +50,7 @@ namespace NESSharp.Common {
 			if (a == null)
 				Index.Set(z => z.Add(Width));
 			else
-				Loop.Descend_Post(X.Set(a), _ => {
+				Loop.Descend_PostCondition_PostDec(X.Set(a), _ => {
 					Index.Set(z => z.Add(Width));
 				});
 			return A;

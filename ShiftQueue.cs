@@ -13,14 +13,14 @@ namespace NESSharp.Common {
 		}
 
 		public void Clear() {
-			Loop.Descend_Pre(X.Set(Values.Length), _ => {
+			Loop.Descend_PostCondition_PreDec(X.Set(Values.Length), _ => {
 				Values[X].Set(_clearVal);
 			});
 		}
 
 		public void Push(VByte v) {
 			X.Set(0);
-			Loop.AscendWhile(X, () => X.NotEquals(Values.Length), loop => {
+			Loop.While_PostCondition_PostInc(X, () => X.NotEquals(Values.Length), loop => {
 				If.True(() => Values[X].Equals(_clearVal), () => {
 					Comment("Add action to the end of the queue");
 					Values[X].Set(v);
@@ -37,7 +37,7 @@ namespace NESSharp.Common {
 		public void Pop() {
 			Comment("Shift other actions left");
 			X.Set(0);
-			Loop.AscendWhile(X, () => X.NotEquals((U8)(Values.Length - 1)), _ => {
+			Loop.While_PostCondition_PostInc(X, () => X.NotEquals((U8)(Values.Length - 1)), _ => {
 				//Get next value
 				X.State.Unsafe(() => { //indicate X modification needs careful attention
 					X.Inc();

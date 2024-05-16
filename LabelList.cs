@@ -37,15 +37,37 @@ namespace NESSharp.Common {
 
 
 			//Write the helper function for stack jumps
-			_stackJumpHelperFunc = Labels.New();
-			_stackJumpHelperFunc.Write();
+			_stackJumpHelperFunc = Labels.New().Write();
 			A.Set(_hi[X]);
 			Stack.Backup(Register.A);
 			A.Set(_lo[X]);
 			Stack.Backup(Register.A);
 			Return();
 		}
-		
+		/// <summary>StackJumpV2 doesn't require internal Lo and Hi labels, so it can be accessed by only a pointer to the label, but can only have 127 entries.</summary>
+		/// <returns>Label to the stack jump address list to be used with a pointer and an index in A.</returns>
+		public Label WriteStackJumpListV2() {
+			var newStackJumpHelperFunc = Labels.New().Write();
+			var vals = new List<IResolvable<U8>>();
+			foreach(var lbl in _labels) {
+				var offsetAddr = lbl.Offset(-1);
+				vals.Add(offsetAddr.Hi());
+				vals.Add(offsetAddr.Lo());
+			}
+			Raw(vals.ToArray());
+
+
+			////Write the helper function for stack jumps
+			//X.Set(A.Multiply(2));
+			//A.Set(_hi[X]);
+			//Stack.Backup(Register.A);
+			//X.Inc();
+			//A.Set(_lo[X]);
+			//Stack.Backup(Register.A);
+			//Return();
+			return newStackJumpHelperFunc;
+		}
+
 		public void GoTo(U8 index) => GoTo_Indirect(this[X.Set(index)]);
 		public void GoTo(IndexingRegister reg) => GoTo_Indirect(this[reg]);
 		//public void GoTo(RegisterBase r) => GoTo_Indirect(this[r]);
