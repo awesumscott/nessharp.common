@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using static NESSharp.Core.AL;
+using static NESSharp.Core.CPU6502;
 
 namespace NESSharp.Common.Mapper30 {
 	public class BankedSubroutine {
@@ -26,9 +26,9 @@ namespace NESSharp.Common.Mapper30 {
 		private List<BankedSubroutine> _list = new List<BankedSubroutine>();
 
 		static BankSwitchTable() {
-			BankLabel = Labels["BankCallTable_Bank"];
-			SubLoLabel = Labels["BankCallTable_SubLo"];
-			SubHiLabel = Labels["BankCallTable_SubHi"];
+			BankLabel = AL.Labels["BankCallTable_Bank"];
+			SubLoLabel = AL.Labels["BankCallTable_SubLo"];
+			SubHiLabel = AL.Labels["BankCallTable_SubHi"];
 		}
 		public void Add(BankedSubroutine bs) {
 			_list.Add(bs);
@@ -37,11 +37,11 @@ namespace NESSharp.Common.Mapper30 {
 			BankLabel.Write();
 			//Raw(this.Select(x => (byte)x.Value.Bank).ToArray()); //Dictionary<object, BankedSubroutine> version
 			//Raw(this.Cast<System.Collections.DictionaryEntry>().Select(x => (byte)((BankedSubroutine)x.Value).Bank).ToArray()); //OrderedDictionary version
-			Raw(_list.Select(x => x.Bank).ToArray()); //List<BankedSubroutine> version
+			AL.Raw(_list.Select(x => x.Bank).ToArray()); //List<BankedSubroutine> version
 			SubLoLabel.Write();
-			Raw(_list.Select(x => LabelFor(x.Method).Offset(-1).Lo()).ToArray());
+			AL.Raw(_list.Select(x => AL.LabelFor(x.Method).Offset(-1).Lo()).ToArray());
 			SubHiLabel.Write();
-			Raw(_list.Select(x => LabelFor(x.Method).Offset(-1).Hi()).ToArray());
+			AL.Raw(_list.Select(x => AL.LabelFor(x.Method).Offset(-1).Hi()).ToArray());
 		}
 		public U8 IndexOf(object name) => (U8)_list.IndexOf(_list.Where(x => x.Key.ToString() == name.ToString()).First());
 		[Subroutine]
@@ -56,19 +56,19 @@ namespace NESSharp.Common.Mapper30 {
 		}
 		public void Call(Label lbl) {
 			X.Set(lbl);
-			GoSub(_BankCall);
+			AL.GoSub(_BankCall);
 		}
 		public void Call(LabelIndexed oli) {
 			X.Set(A.Set(oli));
-			GoSub(_BankCall);
+			AL.GoSub(_BankCall);
 		}
 		public void Call(object name) {
 			X.Set(IndexOf(name));
-			GoSub(_BankCall);
+			AL.GoSub(_BankCall);
 		}
 		public void BSCAR(object name) {
 			X.Set(IndexOf(name));
-			GoSub(_BankSwitchCallAndRestore);
+			AL.GoSub(_BankSwitchCallAndRestore);
 		}
 
 
@@ -76,7 +76,7 @@ namespace NESSharp.Common.Mapper30 {
 		private static void _BankSwitchCallAndRestore() {
 			A.Set(BankSwitching.Bank);
 			Stack.Preserve(A, () => {
-				GoSub(_BankCall); //Using JSR here instead of the usual JMP so it comes back here instead, because BC tables are all addr-1
+				AL.GoSub(_BankCall); //Using JSR here instead of the usual JMP so it comes back here instead, because BC tables are all addr-1
 			});
 			//GoSub(BankSwitching._SwitchBanks);
 			BankSwitching.SwitchPrgTo(A);
@@ -116,8 +116,8 @@ namespace NESSharp.Common.Mapper30 {
 			//});
 			Y.Set(A);
 			Bank.Set(Y);
-			Labels["BankSwitchNoSave"].Write();
-			LabelFor(_BankTable)[Y].Set(LabelFor(_BankTable)[Y]);
+			AL.Labels["BankSwitchNoSave"].Write();
+			AL.LabelFor(_BankTable)[Y].Set(AL.LabelFor(_BankTable)[Y]);
 		}
 
 		[DataSection]
@@ -126,45 +126,44 @@ namespace NESSharp.Common.Mapper30 {
 			var bankIds = new U8[128]; //32-1 to skip the fixed bank
 			for (byte i = 0; i < 128; i++)
 				bankIds[i] = i;
-			Raw(bankIds);
+			AL.Raw(bankIds);
 		}
 
 		public static void SwitchPrgTo(U8 bankNum) {
 			if (bankNum > 31) throw new Exception("PRG bank range is 0-31");
 			//Carry.Clear();
 			Bank.And(0b11100000).Or(bankNum);
-			GoSub(_SwitchBanks);
+			AL.GoSub(_SwitchBanks);
 		}
 		public static void SwitchPrgTo(RegisterA a) {
 			//Carry.Clear();
-			Temp[0].Set(A);
-			Bank.And(0b11100000).Or(Temp[0]);
-			GoSub(_SwitchBanks);
+			AL.Temp[0].Set(A);
+			Bank.And(0b11100000).Or(AL.Temp[0]);
+			AL.GoSub(_SwitchBanks);
 		}
 		public static void SwitchChrTo(U8 bankNum) {
 			if (bankNum > 31) throw new Exception("PRG bank range is 0-31");
 			Carry.Clear();
 			A.Set(bankNum).ROL().ROL().ROL().ROL().ROL();
-			Temp[0].Set(A);
-			Bank.And(0b00011111).ADC(Temp[0]);
-			GoSub(_SwitchBanks);
+			AL.Temp[0].Set(A);
+			Bank.And(0b00011111).ADC(AL.Temp[0]);
+			AL.GoSub(_SwitchBanks);
 		}
 		public static void SwitchChrTo(RegisterA a) {
 			Carry.Clear();
 			A.ROL().ROL().ROL().ROL().ROL();
-			Temp[0].Set(A);
-			Bank.And(0b00011111).ADC(Temp[0]);
-			GoSub(_SwitchBanks);
+			AL.Temp[0].Set(A);
+			Bank.And(0b00011111).ADC(AL.Temp[0]);
+			AL.GoSub(_SwitchBanks);
 		}
 		//TODO: replace this with enum flags for PRG and CHR banks
 		public static void SwitchTo(U8 bankNum) {
 			if (bankNum > 31) throw new Exception("PRG bank range is 0-31");
 			A.Set(bankNum);
-			GoSub(_SwitchBanks);
+			AL.GoSub(_SwitchBanks);
 		}
 		public static void SwitchTo(RegisterA a) {
-			GoSub(_SwitchBanks);
+			AL.GoSub(_SwitchBanks);
 		}
-
 	}
 }

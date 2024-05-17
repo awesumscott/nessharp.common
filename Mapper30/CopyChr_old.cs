@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using NESSharp.Core;
-using static NESSharp.Core.AL;
+using static NESSharp.Core.CPU6502;
 
 
 namespace NESSharp.Common {
@@ -25,7 +25,7 @@ namespace NESSharp.Common.Mapper30 {
 		[RegParam(Register.Y, "Starting offset")]
 		[Subroutine]
 		public static void ChrCopy() {
-			Comment("Copy a chunk to CHR (<=255 bytes)");
+			AL.Comment("Copy a chunk to CHR (<=255 bytes)");
 
 			NES.PPU.Address.Write(Y, (U8)0); //Hi then Lo
 			Y.Set(0); //starting index into the first page
@@ -61,7 +61,7 @@ namespace NESSharp.Common.Mapper30 {
 			//TODO: finish after implementing Pointer
 			X.Set(CHR_ONE_PAGE);
 			Y.Set(0);
-			GoSub(ChrCopy);
+			AL.GoSub(ChrCopy);
 			//X.Set(CHR_ONE_PAGE);
 			//Y.Set(10);
 			//GoSub(ChrCopy);
@@ -89,7 +89,7 @@ namespace NESSharp.Common.Mapper30 {
 			//TODO: finish after implementing Pointer
 			X.Set(CHR_ONE_PAGE);
 			Y.Set(0x10);
-			GoSub(ChrCopy);
+			AL.GoSub(ChrCopy);
 			//X.Set(CHR_ONE_PAGE);
 			//Y.Set(10);
 			//GoSub(ChrCopy);
@@ -106,7 +106,7 @@ namespace NESSharp.Common.Mapper30 {
 			//Set GraphicsPtr before calling!
 			//const byte CHR_ONE_PAGE = 16;
 			const byte CHR_TWO_PAGES = 32;
-			Comment("Backup current bank");
+			AL.Comment("Backup current bank");
 			A.Set(BankSwitching.Bank);
 			Stack.Backup(Register.A);
 
@@ -115,14 +115,14 @@ namespace NESSharp.Common.Mapper30 {
 			//TODO: finish after implementing Pointer
 			X.Set(CHR_TWO_PAGES);
 			Y.Set(0);
-			GoSub(ChrCopy);
+			AL.GoSub(ChrCopy);
 			//Globals.graphicsPtr.PointTo(LabelFor(Rom.ChrBank1));
 			//X.Set(CHR_ONE_PAGE);
 			//Y.Set(10);
 			//GoSub(ChrCopy);
 			
 			Stack.Restore(Register.A);
-			GoSub(BankSwitching._SwitchBanks);
+			AL.GoSub(BankSwitching._SwitchBanks);
 		}
 	}
 }
